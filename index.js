@@ -38,14 +38,11 @@ const TEM_OPENAI = Boolean(
   process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== ''
 );
 
-const TEM_BASE_URL = Boolean(
-  process.env.OPENAI_BASE_URL && process.env.OPENAI_BASE_URL.trim() !== ''
-);
+const TEM_BASE_URL = false;
 
 const openai = TEM_OPENAI
   ? new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
-      baseURL: TEM_BASE_URL ? process.env.OPENAI_BASE_URL.trim() : undefined,
     })
   : null;
 
