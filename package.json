@@ -1,0 +1,18 @@
+{
+  "name": "jrc-voice-quality-analytics",
+  "version": "2.0.0",
+  "description": "Monitoria automática de qualidade para ligações PABX — JRC",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "multer": "latest",
+    "openai": "latest"
+  }
+}
