@@ -38,11 +38,12 @@ const TEM_OPENAI = Boolean(
   process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== ''
 );
 
-const TEM_BASE_URL = false;
+const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL?.trim();
 
 const openai = TEM_OPENAI
   ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API_KEY.trim(),
+      ...(OPENAI_BASE_URL ? { baseURL: OPENAI_BASE_URL } : {})
     })
   : null;
 
@@ -51,9 +52,26 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Logs seguros — sem expor chaves
+// Helper de log seguro para erros da OpenAI (Sem expor credenciais)
+function logErroOpenAI(err, endpoint, model) {
+  const status = err.status || err.response?.status || 'N/A';
+  const tipo = err.type || err.code || 'N/A';
+  const mensagem = err.message || 'Erro desconhecido';
+  const hasCustomBaseUrl = Boolean(OPENAI_BASE_URL);
+  
+  console.error(`[JRC] [OPENAI ERROR] [${endpoint}]`);
+  console.error(`  - Status HTTP: ${status}`);
+  console.error(`  - Tipo de Erro: ${tipo}`);
+  console.error(`  - Mensagem: ${mensagem}`);
+  console.error(`  - Existe OPENAI_BASE_URL customizada: ${hasCustomBaseUrl}`);
+  console.error(`  - Modelo Usado: ${model || 'N/A'}`);
+}
+
+// Logs seguros de inicialização (Render / Local)
 console.log('[JRC] OpenAI configurada:', TEM_OPENAI);
-console.log('[JRC] OpenAI baseURL customizada:', TEM_BASE_URL);
+console.log('[JRC] OpenAI base URL customizada:', Boolean(OPENAI_BASE_URL));
+console.log('[JRC] Modelo transcrição:', process.env.OPENAI_TRANSCRIPTION_MODEL || 'gpt-4o-mini-transcribe');
+console.log('[JRC] Modelo análise:', process.env.OPENAI_ANALYSIS_MODEL || 'gpt-4.1-mini');
 
 // ============================================================
 // EXPRESS
@@ -701,29 +719,57 @@ Retorne exclusivamente um JSON válido no schema solicitado.
 Transcrição da ligação:
 ${texto}`;
 
-  const response = await openai.responses.create({
-    model,
-    input: [
-      {
-        role: 'system',
-        content: systemPrompt,
+  let response;
+  try {
+    response = await openai.responses.create({
+      model,
+      input: [
+        {
+          role: 'system',
+          content: systemPrompt,
+        },
+        { 
+          role: 'user', 
+          content: userPrompt, 
+        },
+      ],
+      text: {
+        format: {
+          type: 'json_schema',
+          name: 'analise_qualidade_pabx',
+          schema: ANALISE_QUALIDADE_SCHEMA,
+          strict: true,
+        },
       },
-      { 
-        role: 'user', 
-        content: userPrompt, 
-      },
-    ],
-    text: {
-      format: {
-        type: 'json_schema',
-        name: 'analise_qualidade_pabx',
-        schema: ANALISE_QUALIDADE_SCHEMA,
-        strict: true,
-      },
-    },
-  });
+    });
+  } catch (errAnalise) {
+    logErroOpenAI(errAnalise, 'analysis', model);
+    
+    let msgErro = errAnalise.message || '';
+    const responseBody = errAnalise.response || '';
+    
+    const isHtml = msgErro.toLowerCase().includes('<!doctype') || 
+                   msgErro.toLowerCase().includes('html') || 
+                   String(responseBody).toLowerCase().includes('<!doctype');
 
-  const analise = JSON.parse(response.output_text);
+    if (isHtml) {
+      msgErro = 'A API retornou HTML em vez de JSON. Verifique OPENAI_BASE_URL ou proxy.';
+    } else if (errAnalise.status === 401 || msgErro.toLowerCase().includes('apikey') || msgErro.toLowerCase().includes('auth') || msgErro.toLowerCase().includes('incorrect api key')) {
+      msgErro = 'Chave OpenAI inválida ou não autorizada.';
+    } else if (errAnalise.status === 404 || msgErro.toLowerCase().includes('model_not_found') || msgErro.toLowerCase().includes('not found')) {
+      msgErro = `Modelo de análise ${model} indisponível.`;
+    }
+
+    throw new Error(msgErro);
+  }
+
+  let analise;
+  try {
+    analise = JSON.parse(response.output_text);
+  } catch (parseErr) {
+    console.error('[JRC] Erro ao parsear JSON retornado pela OpenAI:', parseErr.message);
+    throw new Error('A resposta da OpenAI não é um JSON válido.');
+  }
 
   // ============================================================
   // PÓS-VALIDAÇÃO E NORMALIZAÇÃO DE CAMPOS (GARANTIAS DE INTEGRIDADE)
@@ -846,11 +892,57 @@ app.get('/api/health', (_req, res) => {
     versao: '2.0.0',
     modo: TEM_OPENAI ? 'openai' : 'open_source_local',
     openai_configurada: TEM_OPENAI,
-    openai_base_url_customizada: TEM_BASE_URL,
+    openai_base_url_customizada: Boolean(OPENAI_BASE_URL),
     supabase_configurado: Boolean(
       process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
     ),
   });
+});
+
+app.get('/api/diagnostico-openai', async (_req, res) => {
+  if (!TEM_OPENAI) {
+    return res.status(400).json({
+      openai_configurada: false,
+      base_url_customizada: Boolean(OPENAI_BASE_URL),
+      auth_ok: false,
+      erro: "Chave OpenAI não configurada no servidor."
+    });
+  }
+
+  try {
+    await openai.models.list();
+    
+    return res.json({
+      openai_configurada: true,
+      base_url_customizada: Boolean(OPENAI_BASE_URL),
+      auth_ok: true,
+      erro: null
+    });
+  } catch (err) {
+    console.error('[JRC] Erro no diagnóstico da OpenAI:', err.message);
+    
+    let erroMensagem = err.message || 'Erro de conexão';
+    const responseBody = err.response || '';
+    
+    const isHtml = erroMensagem.toLowerCase().includes('<!doctype') || 
+                   erroMensagem.toLowerCase().includes('html') || 
+                   String(responseBody).toLowerCase().includes('<!doctype');
+
+    if (isHtml) {
+      erroMensagem = 'A API retornou HTML em vez de JSON. Verifique OPENAI_BASE_URL ou proxy.';
+    } else if (err.status === 401 || erroMensagem.toLowerCase().includes('apikey') || erroMensagem.toLowerCase().includes('auth') || erroMensagem.toLowerCase().includes('incorrect api key')) {
+      erroMensagem = 'Chave OpenAI inválida ou não autorizada.';
+    } else if (err.status === 404 || erroMensagem.toLowerCase().includes('model_not_found') || erroMensagem.toLowerCase().includes('not found')) {
+      erroMensagem = 'Endpoint de diagnóstico não encontrado.';
+    }
+
+    return res.status(err.status || 500).json({
+      openai_configurada: true,
+      base_url_customizada: Boolean(OPENAI_BASE_URL),
+      auth_ok: false,
+      erro: erroMensagem
+    });
+  }
 });
 
 // --- POST /api/processar-audio (com OpenAI) ---
@@ -882,10 +974,32 @@ app.post('/api/processar-audio', upload.single('audio'), async (req, res) => {
         file: fs.createReadStream(req.file.path),
         language: 'pt',
       });
+      
       textoTranscrito = transcricaoResp.text;
+      
+      if (typeof textoTranscrito === 'string' && textoTranscrito.trim().startsWith('<!DOCTYPE')) {
+        throw new Error('HTML_RESPONSE');
+      }
     } catch (errTranscricao) {
-      console.error('[JRC] Falha na transcrição OpenAI:', errTranscricao.message);
-      throw new Error(`Falha na transcrição com OpenAI: ${errTranscricao.message}`);
+      logErroOpenAI(errTranscricao, 'audio/transcriptions', modelTranscricao);
+      
+      let msgErro = errTranscricao.message || '';
+      const responseBody = errTranscricao.response || '';
+      
+      const isHtml = msgErro.toLowerCase().includes('<!doctype') || 
+                     msgErro.toLowerCase().includes('html') || 
+                     String(responseBody).toLowerCase().includes('<!doctype') || 
+                     msgErro === 'HTML_RESPONSE';
+
+      if (isHtml) {
+        msgErro = 'A API retornou HTML em vez de JSON. Verifique OPENAI_BASE_URL ou proxy.';
+      } else if (errTranscricao.status === 401 || msgErro.toLowerCase().includes('apikey') || msgErro.toLowerCase().includes('auth') || msgErro.toLowerCase().includes('incorrect api key')) {
+        msgErro = 'Chave OpenAI inválida ou não autorizada.';
+      } else if (errTranscricao.status === 404 || msgErro.toLowerCase().includes('model_not_found') || msgErro.toLowerCase().includes('not found')) {
+        msgErro = 'Modelo de transcrição indisponível. Testar whisper-1.';
+      }
+
+      throw new Error(msgErro);
     }
 
     await salvarTranscricao(chamada.id, textoTranscrito, modelTranscricao);
