@@ -107,7 +107,14 @@ const ANALISE_QUALIDADE_SCHEMA = {
   additionalProperties: false,
   properties: {
     resumo_conversa: { type: 'string' },
+    resumo_humanizado: { type: 'string' },
     assuntos_abordados: { type: 'array', items: { type: 'string' } },
+    motivo_contato: { type: 'string' },
+    necessidade_cliente: { type: 'string' },
+    desfecho_ligacao: { type: 'string' },
+    falantes_identificados: { type: 'boolean' },
+    speaker_mapping_confidence: { type: 'string', enum: ['alta', 'media', 'baixa'] },
+    observacao_falantes: { type: 'string' },
     sentimento_cliente: {
       type: 'string',
       enum: ['positivo', 'neutro', 'negativo', 'critico', 'nao_identificado'],
@@ -116,17 +123,21 @@ const ANALISE_QUALIDADE_SCHEMA = {
       type: 'string',
       enum: ['positivo', 'neutro', 'negativo', 'nao_identificado'],
     },
+    sensacao_conversa: {
+      type: 'string',
+      enum: ['tranquila', 'objetiva', 'cordial', 'confusa', 'tensa', 'desgastante', 'insatisfeita', 'critica', 'inconclusiva'],
+    },
     temperatura_conversa: {
       type: 'string',
       enum: ['fria', 'neutra', 'quente', 'critica'],
     },
     tom_cliente: {
       type: 'string',
-      enum: ['calmo', 'cordial', 'confuso', 'irritado', 'agressivo', 'insatisfeito', 'nao_identificado'],
+      enum: ['calmo', 'cordial', 'confuso', 'irritado', 'agressivo', 'insatisfeito', 'frustrado', 'ansioso', 'nao_identificado'],
     },
     tom_atendente: {
       type: 'string',
-      enum: ['cordial', 'neutro', 'impaciente', 'agressivo', 'empatico', 'nao_identificado'],
+      enum: ['cordial', 'neutro', 'impaciente', 'agressivo', 'empatico', 'tecnico', 'robotico', 'inseguro', 'nao_identificado'],
     },
     houve_agressividade_cliente: { type: 'boolean' },
     houve_agressividade_atendente: { type: 'boolean' },
@@ -178,18 +189,40 @@ const ANALISE_QUALIDADE_SCHEMA = {
     motivo_alerta: { type: 'string' },
     confianca_transcricao: { type: 'string', enum: ['alta', 'media', 'baixa'] },
     observacao_transcricao: { type: 'string' },
+    confianca_analise: { type: 'string', enum: ['alta', 'media', 'baixa'] },
+    justificativa_nota: { type: 'string' },
+    parecer_monitoria: { type: 'string' },
+    recomendacao_supervisor: { type: 'string' },
+    trechos_relevantes: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          tipo: { type: 'string', enum: ['insatisfacao', 'elogio', 'risco', 'resolucao', 'empatia', 'agressividade', 'duvida'] },
+          falante_estimado: { type: 'string', enum: ['cliente', 'atendente', 'nao_identificado'] },
+          trecho: { type: 'string' },
+          interpretacao: { type: 'string' },
+        },
+        required: ['tipo', 'falante_estimado', 'trecho', 'interpretacao'],
+      },
+    },
   },
   required: [
-    'resumo_conversa', 'assuntos_abordados', 'sentimento_cliente',
-    'sentimento_atendente', 'temperatura_conversa', 'tom_cliente', 'tom_atendente',
-    'houve_agressividade_cliente', 'houve_agressividade_atendente', 'houve_empatia',
-    'houve_cordialidade', 'houve_interrupcao', 'cliente_demonstrou_insatisfacao',
+    'resumo_conversa', 'resumo_humanizado', 'assuntos_abordados', 'motivo_contato',
+    'necessidade_cliente', 'desfecho_ligacao', 'falantes_identificados',
+    'speaker_mapping_confidence', 'observacao_falantes', 'sentimento_cliente',
+    'sentimento_atendente', 'sensacao_conversa', 'temperatura_conversa', 'tom_cliente',
+    'tom_atendente', 'houve_agressividade_cliente', 'houve_agressividade_atendente',
+    'houve_empatia', 'houve_cordialidade', 'houve_interrupcao', 'cliente_demonstrou_insatisfacao',
     'cliente_ameacou_cancelar', 'cliente_mencionou_procon_anatel',
     'cliente_mencionou_processo', 'problema_resolvido', 'necessita_retorno',
     'risco_churn', 'risco_reclamacao', 'avaliacao_atendente', 'pontos_positivos',
     'pontos_negativos', 'oportunidades_melhoria', 'treinamento_recomendado',
     'classificacao_ligacao', 'status_monitoria', 'alerta_supervisao',
     'motivo_alerta', 'confianca_transcricao', 'observacao_transcricao',
+    'confianca_analise', 'justificativa_nota', 'parecer_monitoria',
+    'recomendacao_supervisor', 'trechos_relevantes',
   ],
 };
 
@@ -648,19 +681,27 @@ async function analisarQualidadeOpenAI(texto) {
   const { confianca_transcricao, observacao_transcricao } =
     detectarQualidadeTranscricao(texto);
 
-  const prompt = `Você é um auditor sênior de qualidade de call center da JRC Telecom.
-Analise a transcrição de ligação PABX abaixo e retorne um JSON de monitoria de qualidade.
+  const systemPrompt = `Você é um agente sênior de monitoria de qualidade de call center da JRC. Sua função é analisar transcrições de ligações PABX entre cliente e atendente.
 
-Orientações:
-- resumo_conversa: resumo objetivo em até 3 frases.
-- temperatura_conversa: fria (tranquila), neutra (comum), quente (insatisfeito/tenso), critica (ameaça grave, regulatório, agressão).
-- avaliacao_atendente.nota_final deve ser exatamente a soma dos demais critérios.
-- alerta_supervisao = true se: agressividade, ameaça de cancelamento, Procon, Anatel, processo, nota < 60, churn alto/crítico.
-- confianca_transcricao já detectada como: "${confianca_transcricao}". Use esse valor.
-- observacao_transcricao: "${observacao_transcricao}".
-- Não invente informações que não apareçam na transcrição.
+Você deve avaliar a conversa como um monitor humano experiente, considerando contexto, tom, sensação da conversa, postura do atendente, sentimento do cliente, resolução do problema, riscos operacionais e oportunidades de melhoria.
 
-Transcrição:
+Não faça análise rasa por palavras-chave. Entenda a intenção, o clima emocional e o desfecho da conversa.
+
+Diferencie cordialidade de satisfação. Diferencie encerramento educado de experiência positiva. Diferencie cliente calmo de cliente satisfeito. Diferencie atendente educado de atendimento resolutivo.
+
+Quando os falantes não estiverem identificados, tente inferir cliente e atendente com cautela. Se não houver evidência suficiente, use nao_identificado e reduza a confiança da análise.
+
+Não invente informações. Se algo não estiver claro na transcrição, sinalize incerteza.
+
+Se a transcrição estiver confusa, repetitiva, incompleta ou incoerente, marque confianca_transcricao baixa e recomende revisão humana.
+
+Sempre responda em JSON válido, sem markdown, sem texto fora do JSON.`;
+
+  const userPrompt = `Analise a ligação abaixo como uma monitoria humanizada de qualidade de call center.
+
+Retorne exclusivamente um JSON válido no schema solicitado.
+
+Transcrição da ligação:
 ${texto}`;
 
   const response = await openai.responses.create({
@@ -668,9 +709,12 @@ ${texto}`;
     input: [
       {
         role: 'system',
-        content: 'Você retorna estritamente JSON válido seguindo o schema de qualidade de call center.',
+        content: systemPrompt,
       },
-      { role: 'user', content: prompt },
+      { 
+        role: 'user', 
+        content: userPrompt, 
+      },
     ],
     text: {
       format: {
@@ -682,7 +726,65 @@ ${texto}`;
     },
   });
 
-  return JSON.parse(response.output_text);
+  const analise = JSON.parse(response.output_text);
+
+  // ============================================================
+  // PÓS-VALIDAÇÃO E NORMALIZAÇÃO DE CAMPOS (GARANTIAS DE INTEGRIDADE)
+  // ============================================================
+  
+  // 1. Garantir que as notas estejam dentro dos limites permitidos
+  const av = analise.avaliacao_atendente || {};
+  av.cordialidade = Math.min(10, Math.max(0, parseInt(av.cordialidade) || 0));
+  av.empatia = Math.min(10, Math.max(0, parseInt(av.empatia) || 0));
+  av.clareza_comunicacao = Math.min(10, Math.max(0, parseInt(av.clareza_comunicacao) || 0));
+  av.dominio_assunto = Math.min(10, Math.max(0, parseInt(av.dominio_assunto) || 0));
+  av.conducao_conversa = Math.min(10, Math.max(0, parseInt(av.conducao_conversa) || 0));
+  av.resolucao_problema = Math.min(15, Math.max(0, parseInt(av.resolucao_problema) || 0));
+  av.cumprimento_protocolo = Math.min(10, Math.max(0, parseInt(av.cumprimento_protocolo) || 0));
+  av.controle_emocional = Math.min(10, Math.max(0, parseInt(av.controle_emocional) || 0));
+  av.experiencia_cliente = Math.min(15, Math.max(0, parseInt(av.experiencia_cliente) || 0));
+
+  // Recalcular rigorosamente a nota final para evitar erro matemático da IA
+  av.nota_final = av.cordialidade + av.empatia + av.clareza_comunicacao + 
+                  av.dominio_assunto + av.conducao_conversa + av.resolucao_problema + 
+                  av.cumprimento_protocolo + av.controle_emocional + av.experiencia_cliente;
+  analise.nota_final = av.nota_final;
+  analise.avaliacao_atendente = av;
+
+  // 2. Garantir enums corretos
+  const validasClassificacao = ['excelente', 'boa', 'regular', 'ruim', 'critica'];
+  if (!validasClassificacao.includes(analise.classificacao_ligacao)) {
+    analise.classificacao_ligacao = 'regular';
+  }
+
+  const validosStatus = ['aprovada', 'aprovada_com_observacao', 'reprovada', 'critica_para_supervisao'];
+  if (!validosStatus.includes(analise.status_monitoria)) {
+    analise.status_monitoria = 'aprovada';
+  }
+
+  const validasTemperaturas = ['fria', 'neutra', 'quente', 'critica'];
+  if (!validasTemperaturas.includes(analise.temperatura_conversa)) {
+    analise.temperatura_conversa = 'neutra';
+  }
+
+  const validasSensacoes = ['tranquila', 'objetiva', 'cordial', 'confusa', 'tensa', 'desgastante', 'insatisfeita', 'critica', 'inconclusiva'];
+  if (!validasSensacoes.includes(analise.sensacao_conversa)) {
+    analise.sensacao_conversa = 'objetiva';
+  }
+
+  // 3. Garantir que os campos de array de texto e objetos sejam válidos
+  analise.assuntos_abordados = Array.isArray(analise.assuntos_abordados) ? analise.assuntos_abordados : [];
+  analise.pontos_positivos = Array.isArray(analise.pontos_positivos) ? analise.pontos_positivos : [];
+  analise.pontos_negativos = Array.isArray(analise.pontos_negativos) ? analise.pontos_negativos : [];
+  analise.oportunidades_melhoria = Array.isArray(analise.oportunidades_melhoria) ? analise.oportunidades_melhoria : [];
+  analise.treinamento_recomendado = Array.isArray(analise.treinamento_recomendado) ? analise.treinamento_recomendado : [];
+  analise.trechos_relevantes = Array.isArray(analise.trechos_relevantes) ? analise.trechos_relevantes : [];
+
+  // 4. Injetar metadados de transcrição gerados localmente
+  analise.confianca_transcricao = confianca_transcricao;
+  analise.observacao_transcricao = observacao_transcricao;
+
+  return analise;
 }
 
 async function analisarQualidade(texto) {
