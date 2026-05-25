@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JRC Voice Quality Analytics — Monitoria Inteligente de Call Center</title>
+    <title>jrc-analytics — Monitoria Inteligente de Call Center</title>
     <meta name="description" content="Monitoria automática de qualidade para ligações PABX com a identidade institucional do Grupo JRC." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -78,9 +78,9 @@
 
       /* Container Principal (Shell) */
       .jrc-shell {
-        max-width: 1400px;
+        max-width: 1600px;
         margin: 40px auto;
-        padding: 40px;
+        padding: 24px;
         background: var(--jrc-surface);
         border: 1px solid rgba(255, 255, 255, 0.6);
         border-radius: var(--jrc-radius-xl);
@@ -89,6 +89,8 @@
         box-shadow: var(--jrc-shadow);
         position: relative;
         overflow: hidden;
+        display: flex;
+        gap: 30px;
       }
 
       /* Bolhas Decorativas */
@@ -116,11 +118,125 @@
         z-index: 0;
       }
 
+      /* SIDEBAR LATERAL ESQUERDA */
+      .jrc-sidebar {
+        width: 320px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--jrc-deep) 0%, var(--jrc-navy) 60%, var(--jrc-navy-2) 100%);
+        border-radius: var(--jrc-radius-lg);
+        padding: 35px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        color: #ffffff;
+        box-shadow: 0 12px 36px rgba(10, 53, 86, 0.15);
+        position: relative;
+        z-index: 10;
+        overflow: hidden;
+      }
+
+      .jrc-sidebar::before {
+        content: "";
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: radial-gradient(circle at 30% 30%, rgba(19, 168, 232, 0.18) 0%, transparent 60%);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .jrc-logo-card {
+        background: #ffffff;
+        border-radius: var(--jrc-radius-md);
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .jrc-logo-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .jrc-logo-img {
+        max-width: 100%;
+        height: auto;
+        max-height: 80px;
+        object-fit: contain;
+      }
+
+      .jrc-sidebar-title {
+        font-family: var(--jrc-font);
+        font-size: 24px;
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.2;
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+
+      .jrc-sidebar-subtitle {
+        font-family: var(--jrc-font-body);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--jrc-cyan);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-top: 5px;
+      }
+
+      .jrc-sidebar-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.15);
+        margin: 5px 0;
+      }
+
+      .jrc-sidebar-text {
+        font-family: var(--jrc-font-body);
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: #d1e5f7;
+        font-weight: 400;
+      }
+
+      .jrc-sidebar-footer {
+        margin-top: auto;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.45);
+        font-weight: 500;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+      }
+
+      /* CONTEÚDO PRINCIPAL NA DIREITA */
+      .jrc-main-content {
+        flex-grow: 1;
+        min-width: 0; /* Prevents flex from expanding past parent width */
+        display: flex;
+        flex-direction: column;
+      }
+
       @media (max-width: 1024px) {
         .jrc-shell {
           margin: 15px;
-          padding: 24px;
+          padding: 16px;
           border-radius: var(--jrc-radius-lg);
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .jrc-sidebar {
+          width: 100%;
+          gap: 20px;
+          padding: 24px 20px;
+        }
+
+        .jrc-logo-card {
+          padding: 15px;
         }
       }
 
@@ -1208,20 +1324,47 @@
 
     <div class="jrc-shell">
 
-      <!-- TOPBAR INSTITUCIONAL -->
-      <header class="jrc-topbar">
-        <div class="jrc-brand">
-          <div class="jrc-logo-badge">JRC</div>
-          <div class="jrc-title-area">
-            <h2>JRC Voice Quality Analytics</h2>
-            <p>Grupo JRC • Monitoria automática de qualidade para ligações PABX</p>
+      <!-- SIDEBAR LATERAL ESQUERDA -->
+      <aside class="jrc-sidebar">
+        <div class="jrc-logo-card">
+          <img src="/logo-jrc.png" alt="JRC Logo" class="jrc-logo-img" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 class="jrc-sidebar-title">JRC Voice Quality</h1>
+          <p class="jrc-sidebar-subtitle">Monitoria inteligente de qualidade</p>
+        </div>
+        <div class="jrc-sidebar-divider"></div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <p class="jrc-sidebar-text">
+            A plataforma <strong>jrc-analytics</strong> oferece monitoria inteligente de qualidade de chamadas de voz com inteligência artificial generativa.
+          </p>
+          <p class="jrc-sidebar-text">
+            Analise sentimentos de clientes e atendentes, meça desvios operacionais, avalie critérios de atendimento e recomende planos de treinamento sob medida.
+          </p>
+        </div>
+        <div class="jrc-sidebar-footer">
+          Grupo JRC &copy; 2026<br>
+          jrc-analytics v1.2.0
+        </div>
+      </aside>
+
+      <!-- CONTEÚDO PRINCIPAL NA DIREITA -->
+      <main class="jrc-main-content">
+
+        <!-- TOPBAR INSTITUCIONAL -->
+        <header class="jrc-topbar">
+          <div class="jrc-brand">
+            <div class="jrc-logo-badge">JRC</div>
+            <div class="jrc-title-area">
+              <h2>jrc-analytics</h2>
+              <p>Grupo JRC • Monitoria Inteligente de Call Center</p>
+            </div>
           </div>
-        </div>
-        <div class="status-badge" id="statusBadge">
-          <span class="pulse"></span>
-          <span id="systemMode">Conectando ao sistema...</span>
-        </div>
-      </header>
+          <div class="status-badge" id="statusBadge">
+            <span class="pulse"></span>
+            <span id="systemMode">Conectando ao sistema...</span>
+          </div>
+        </header>
 
       <!-- HERO BANNERS -->
       <section class="jrc-hero">
@@ -1568,8 +1711,7 @@
             </tbody>
           </table>
         </div>
-      </div>
-
+      </main><!-- .jrc-main-content -->
     </div><!-- .jrc-shell -->
 
     <!-- BOTÃO FLUTUANTE DE TELEFONE -->
