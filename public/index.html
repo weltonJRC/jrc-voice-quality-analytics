@@ -804,7 +804,7 @@
       }
 
       /* Badges */
-      .badge {
+      .badge, .jrc-badge {
         display: inline-flex;
         align-items: center;
         padding: 4px 10px;
@@ -817,6 +817,13 @@
         border: 1px solid transparent;
         white-space: nowrap;
       }
+
+      /* Aliases de badges do sistema */
+      .badge-info { background: rgba(32, 185, 242, 0.08); border-color: rgba(32, 185, 242, 0.25); color: var(--jrc-navy); }
+      .badge-neutral { background: #eef4f8; border-color: var(--jrc-border); color: var(--jrc-muted); }
+      .badge-warning { background: rgba(242, 165, 26, 0.08); border-color: rgba(242, 165, 26, 0.25); color: var(--jrc-warning); }
+      .badge-danger { background: rgba(239, 79, 79, 0.08); border-color: rgba(239, 79, 79, 0.25); color: var(--jrc-danger); }
+      .badge-success { background: rgba(37, 183, 122, 0.08); border-color: rgba(37, 183, 122, 0.25); color: var(--jrc-success); }
 
       /* Temperatura classes */
       .t-fria    { background: rgba(32, 185, 242, 0.08);   border-color: rgba(32, 185, 242, 0.25);   color: var(--jrc-navy); }
@@ -1616,7 +1623,7 @@
       <!-- SEÇÃO INFERIOR EM 2 BLOCOS HORIZONTAIS -->
       <section class="bottom-layout-grid">
         
-        <!-- BLOCO 1: ANALISAR GRAVAÇÃO (35% LARGURA) -->
+        <!-- BLOCO 1: SELECIONAR GRAVAÇÃO (32% LARGURA) -->
         <div class="card-white" id="uploadSection">
           <div class="card-header-inner">
             <div style="color:var(--jrc-cloud); display:flex; align-items:center; justify-content:center;">
@@ -1624,7 +1631,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
               </svg>
             </div>
-            <h3>Analisar gravação</h3>
+            <h3>Selecionar gravação da chamada</h3>
           </div>
           
           <p class="upload-instructions">
@@ -1633,22 +1640,27 @@
 
           <form id="uploadForm" autocomplete="off" style="display:flex; flex-direction:column; flex-grow:1;">
             
+            <input id="audioFile" type="file" accept=".mp3,.wav,.ogg,.m4a,audio/*" required hidden />
+
             <!-- Premium dropzone -->
-            <div class="drag-drop-box" onclick="document.getElementById('audioInput').click()">
+            <div id="uploadDropzone" class="drag-drop-box" style="position:relative; cursor:pointer;">
               <div class="drag-drop-icon">
                 <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
               </div>
-              <div class="drag-drop-text">Arraste e solte sua gravação aqui ou clique para selecionar</div>
-              <div class="drag-drop-sub">Formatos aceitos: mp3, wav, ogg, m4a | Tamanho máximo: 50MB</div>
-              <input
-                type="file"
-                id="audioInput"
-                class="input-file-hidden"
-                accept=".mp3,.wav,.m4a,.webm,.mpeg,.mpga,.ogg"
-                required
-              />
+              <div class="drag-drop-text" style="font-size:13px; font-weight:700; color:var(--jrc-navy); margin-top:4px;">
+                Arraste o áudio da ligação para cá ou clique no botão abaixo.
+              </div>
+              
+              <!-- Botão destacado dentro da dropzone -->
+              <button id="selectFileButton" type="button" class="btn-submit-premium" style="width:auto; height:38px; padding:0 20px; font-size:12.5px; margin-top:8px; margin-bottom:4px; background:linear-gradient(135deg, var(--jrc-blue) 0%, var(--jrc-navy) 100%);">
+                Selecionar gravação
+              </button>
+
+              <div class="drag-drop-sub" style="font-size:10.5px; color:var(--jrc-muted); font-weight:500; margin-top:4px;">
+                Formatos aceitos: MP3, WAV, OGG ou M4A. Tamanho máximo: 50MB.
+              </div>
             </div>
 
             <!-- Selected File Indicator -->
@@ -1749,28 +1761,29 @@
       let historicoData = [];
       let modoExibicaoHistorico = 'todos'; // 'todos' | 'criticas'
       let openaiConfigurada = false;
+      let arquivoSelecionado = null;
 
       // ======================================================
       // ELEMENTOS
       // ======================================================
-      const audioInput       = document.getElementById('audioInput');
+      const audioInput       = document.getElementById('audioFile');
       const uploadForm       = document.getElementById('uploadForm');
       const statusBox        = document.getElementById('statusBox');
       const progressWrap     = document.getElementById('progressWrap');
       const progressText     = document.getElementById('progressText');
-      const progressPct      = document.getElementById('progressPct');
       const progressFill     = document.getElementById('progressFill');
       const btnAtualizar     = document.getElementById('btnAtualizar');
-      const btnCriticas      = document.getElementById('btnCriticas');
       const tbodyHistorico   = document.getElementById('tbodyHistorico');
-      const systemMode       = document.getElementById('systemMode');
       const btnAnalisar      = document.getElementById('btnAnalisar');
       const fileSelectedBadge = document.getElementById('fileSelectedBadge');
+      const uploadDropzone   = document.getElementById('uploadDropzone');
+      const selectFileButton = document.getElementById('selectFileButton');
 
       // Escuta mudança de arquivo para feedback visual premium conforme especificação
       audioInput.addEventListener('change', () => {
         const file = audioInput.files[0];
         if (file) {
+          arquivoSelecionado = file;
           fileSelectedBadge.style.display = 'block';
           fileSelectedBadge.innerHTML = `
             <div style="text-align: left; font-size: 12.5px; color: var(--jrc-navy); font-weight: 600; padding: 12px; background: rgba(37, 183, 122, 0.05); border: 1px dashed rgba(37, 183, 122, 0.35); border-radius: 8px; margin-top: 14px; animation: fadeIn 0.25s ease;">
@@ -1782,83 +1795,159 @@
             </div>
           `;
         } else {
+          arquivoSelecionado = null;
           fileSelectedBadge.style.display = 'none';
         }
       });
 
       // ======================================================
-      // UTILITIES & MAPPINGS DINÂMICOS (FUNÇÕES AUXILIARES)
+      // UTILITIES & MAPPINGS DINÂMICOS (FUNÇÕES AUXILIARES DE BADGES)
       // ======================================================
-      function formatarValor(valor) {
-        return valor !== null && valor !== undefined ? valor : '—';
+      function normalizarTexto(valor) {
+        return String(valor || '').trim().toLowerCase();
       }
 
-      function formatarTemperatura(v) {
-        const map = { fria: 'FRIA', neutra: 'NEUTRA', quente: 'QUENTE', critica: 'CRÍTICA' };
-        return map[String(v).toLowerCase()] || String(v || 'NEUTRA').toUpperCase();
-      }
-
-      function formatarSentimento(v) {
-        const map = { positivo: 'POSITIVO', neutro: 'NEUTRO', negativo: 'NEGATIVO', critico: 'CRÍTICO', nao_identificado: 'NÃO IDENTIFICADO' };
-        return map[String(v).toLowerCase()] || String(v || 'NEUTRO').toUpperCase();
-      }
-
-      function formatarRisco(v) {
-        const map = { baixo: 'BAIXO', medio: 'MÉDIO', alto: 'ALTO', critico: 'CRÍTICO' };
-        return map[String(v).toLowerCase()] || String(v || 'BAIXO').toUpperCase();
-      }
-
-      function formatarClassificacao(v) {
-        const map = { excelente: 'EXCELENTE', boa: 'BOA', regular: 'REGULAR', ruim: 'RUIM', critica: 'CRÍTICA' };
-        return map[String(v).toLowerCase()] || String(v || 'REGULAR').toUpperCase();
-      }
-
-      function formatarStatusMonitoria(v) {
-        const map = { 
-          aprovada: 'APROVADA', 
-          aprovada_com_observacao: 'APROVADA COM OBSERVAÇÃO', 
-          reprovada: 'REPROVADA', 
-          critica_para_supervisao: 'CRÍTICA PARA SUPERVISÃO' 
+      function formatarTemperatura(valor) {
+        const v = normalizarTexto(valor);
+        const mapa = {
+          fria: 'FRIA',
+          neutra: 'NEUTRA',
+          quente: 'QUENTE',
+          critica: 'CRÍTICA',
+          crítica: 'CRÍTICA'
         };
-        const key = String(v).toLowerCase().trim();
-        return map[key] || String(v || 'APROVADA').replace(/_/g, ' ').toUpperCase();
+        return mapa[v] || 'NÃO IDENTIFICADO';
+      }
+
+      function formatarSentimento(valor) {
+        const v = normalizarTexto(valor);
+        const mapa = {
+          positivo: 'POSITIVO',
+          neutro: 'NEUTRO',
+          negativo: 'NEGATIVO',
+          critico: 'CRÍTICO',
+          crítico: 'CRÍTICO',
+          nao_identificado: 'NÃO IDENTIFICADO',
+          não_identificado: 'NÃO IDENTIFICADO'
+        };
+        return mapa[v] || 'NÃO IDENTIFICADO';
+      }
+
+      function formatarClassificacao(valor) {
+        const v = normalizarTexto(valor);
+        const mapa = {
+          excelente: 'EXCELENTE',
+          boa: 'BOA',
+          bom: 'BOA',
+          regular: 'REGULAR',
+          ruim: 'RUIM',
+          critica: 'CRÍTICA',
+          crítica: 'CRÍTICA'
+        };
+        return mapa[v] || 'NÃO IDENTIFICADO';
+      }
+
+      function formatarStatusMonitoria(valor) {
+        const v = normalizarTexto(valor);
+        const mapa = {
+          aprovada: 'APROVADA',
+          aprovada_com_observacao: 'APROVADA COM OBSERVAÇÃO',
+          aprovada_com_observação: 'APROVADA COM OBSERVAÇÃO',
+          reprovada: 'REPROVADA',
+          critica_para_supervisao: 'CRÍTICA PARA SUPERVISÃO',
+          crítica_para_supervisão: 'CRÍTICA PARA SUPERVISÃO'
+        };
+        return mapa[v] || 'NÃO IDENTIFICADO';
+      }
+
+      function formatarRisco(valor) {
+        const v = normalizarTexto(valor);
+        const mapa = {
+          critico: 'CRÍTICO',
+          crítico: 'CRÍTICO',
+          alto: 'ALTO',
+          medio: 'MÉDIO',
+          médio: 'MÉDIO',
+          baixo: 'BAIXO',
+          nenhum: 'NENHUM'
+        };
+        return mapa[v] || 'NÃO IDENTIFICADO';
+      }
+
+      function classeTemperatura(valor) {
+        const v = normalizarTexto(valor);
+        if (v.includes('fria')) return 'badge-info';
+        if (v.includes('neutra')) return 'badge-neutral';
+        if (v.includes('quente')) return 'badge-warning';
+        if (v.includes('critica') || v.includes('crítica')) return 'badge-danger';
+        return 'badge-neutral';
+      }
+
+      function classeSentimento(valor) {
+        const v = normalizarTexto(valor);
+        if (v.includes('positivo')) return 'badge-success';
+        if (v.includes('neutro')) return 'badge-neutral';
+        if (v.includes('negativo')) return 'badge-warning';
+        if (v.includes('critico') || v.includes('crítico')) return 'badge-danger';
+        return 'badge-neutral';
+      }
+
+      function classeClassificacao(valor) {
+        const v = normalizarTexto(valor);
+        if (v.includes('excelente')) return 'badge-success';
+        if (v.includes('boa') || v.includes('bom')) return 'badge-success';
+        if (v.includes('regular')) return 'badge-warning';
+        if (v.includes('ruim')) return 'badge-danger';
+        if (v.includes('critica') || v.includes('crítica')) return 'badge-danger';
+        return 'badge-neutral';
+      }
+
+      function classeStatus(valor) {
+        const v = normalizarTexto(valor);
+        if (v === 'aprovada') return 'badge-success';
+        if (v.includes('observacao') || v.includes('observação')) return 'badge-warning';
+        if (v.includes('reprovada')) return 'badge-danger';
+        if (v.includes('critica') || v.includes('crítica')) return 'badge-danger';
+        return 'badge-neutral';
       }
 
       function classeBadgePorTipo(tipo, valor) {
-        const val = String(valor || '').toLowerCase().trim();
+        const v = normalizarTexto(valor);
+        if (tipo === 'risco') {
+          if (v.includes('critico') || v.includes('crítica') || v.includes('crítico')) return 'badge-danger';
+          if (v.includes('alto')) return 'badge-danger';
+          if (v.includes('medio') || v.includes('médio')) return 'badge-warning';
+          if (v.includes('baixo')) return 'badge-info';
+          if (v.includes('nenhum')) return 'badge-success';
+          return 'badge-neutral';
+        }
         if (tipo === 'temperatura') {
-          if (val === 'fria') return 't-fria';
-          if (val === 'neutra') return 't-neutra';
-          if (val === 'quente') return 't-quente';
-          if (val === 'critica') return 't-critica';
+          return classeTemperatura(valor);
         }
         if (tipo === 'sentimento') {
-          if (val === 'positivo') return 'c-excelente';
-          if (val === 'neutro') return 't-neutra';
-          if (val === 'negativo') return 'c-ruim';
-          if (val === 'critico') return 'c-critica';
-          return 't-neutra';
+          return classeSentimento(valor);
         }
-        if (tipo === 'risco') {
-          if (val === 'baixo') return 'c-excelente';
-          if (val === 'medio') return 'c-regular';
-          if (val === 'alto') return 'c-ruim';
-          if (val === 'critico') return 'c-critica';
-        }
-        if (tipo === 'classificacao') {
-          if (val === 'excelente') return 'c-excelente';
-          if (val === 'boa') return 'c-boa';
-          if (val === 'regular') return 'c-regular';
-          if (val === 'ruim') return 'c-ruim';
-          if (val === 'critica') return 'c-critica';
-        }
-        if (tipo === 'status') {
-          if (val === 'aprovada') return 's-aprovada';
-          if (val === 'aprovada_com_observacao') return 's-aprovada_com_observacao';
-          if (val === 'reprovada') return 's-reprovada';
-          if (val === 'critica_para_supervisao') return 's-critica_para_supervisao';
-        }
-        return 't-neutra';
+        return 'badge-neutral';
+      }
+
+      function renderBadge(texto, classe) {
+        return `<span class="jrc-badge ${classe}">${texto}</span>`;
+      }
+
+      function badgeTemp(temp) {
+        return renderBadge(formatarTemperatura(temp), classeTemperatura(temp));
+      }
+
+      function badgeSentiment(sent) {
+        return renderBadge(formatarSentimento(sent), classeSentimento(sent));
+      }
+
+      function badgeClassif(classif) {
+        return renderBadge(formatarClassificacao(classif), classeClassificacao(classif));
+      }
+
+      function formatarValor(valor) {
+        return valor !== null && valor !== undefined ? valor : '—';
       }
 
       function classeNota(nota) {
@@ -1873,7 +1962,7 @@
 
       function simNaoBadge(valor, tipoIndicador) {
         const sim = (valor === true || valor === 'true' || valor === 1 || valor === '1' || String(valor).toLowerCase() === 'sim');
-        let badgeClass = 'b-nao';
+        let badgeClass = 'badge-neutral';
         let badgeText = 'NÃO';
         
         if (sim) {
@@ -2210,27 +2299,32 @@
           }
 
           tbodyHistorico.innerHTML = data.slice(0, 5).map((item, idx) => {
-            const chamada = item.chamadas_pabx || {};
-            const dataStr = formatDate(item.analise_criada_em || item.criado_em).split(' ')[0] + ' ' + formatDate(item.analise_criada_em || item.criado_em).split(' ')[1];
-            const arquivo = chamada.arquivo_audio || item.arquivo_audio || '—';
-            const temp = item.temperatura_conversa || 'neutra';
-            const sentCliente = item.sentimento_cliente || 'neutro';
-            const nota = item.nota_final ?? 0;
-            const classif = item.classificacao_ligacao || 'regular';
-            const alerta = item.alerta_supervisao;
+            try {
+              const chamada = item.chamadas_pabx || {};
+              const dataStr = formatDate(item.analise_criada_em || item.criado_em).split(' ')[0] + ' ' + formatDate(item.analise_criada_em || item.criado_em).split(' ')[1];
+              const arquivo = chamada.arquivo_audio || item.arquivo_audio || '—';
+              const temp = item.temperatura_conversa || 'neutra';
+              const sentCliente = item.sentimento_cliente || 'neutro';
+              const nota = item.nota_final ?? 0;
+              const classif = item.classificacao_ligacao || 'regular';
+              const alerta = item.alerta_supervisao;
 
-            const badgeStatusHtml = `<span class="badge s-aprovada" style="padding: 2px 8px; font-size:10px; display:inline-flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; background:#25b77a; border-radius:50%; display:inline-block;"></span>Concluído</span>`;
+              const badgeStatusHtml = `<span class="badge s-aprovada" style="padding: 2px 8px; font-size:10px; display:inline-flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; background:#25b77a; border-radius:50%; display:inline-block;"></span>Concluído</span>`;
 
-            return `<tr id="tr-${idx}" onclick="window._selecionarLinha(${idx})">
-              <td>${dataStr}</td>
-              <td class="td-file" title="${arquivo}">${arquivo}</td>
-              <td>${badgeTemp(temp)}</td>
-              <td>${badgeSentiment(sentCliente)}</td>
-              <td class="td-nota">${nota}</td>
-              <td>${badgeClassif(classif)}</td>
-              <td>${badgeStatusHtml}</td>
-              <td>${alerta ? '<span style="width:8px; height:8px; background:var(--jrc-danger); border-radius:50%; display:inline-block; box-shadow:0 0 6px var(--jrc-danger);"></span>' : '<span style="color:var(--jrc-muted)">—</span>'}</td>
-            </tr>`;
+              return `<tr id="tr-${idx}" onclick="window._selecionarLinha(${idx})">
+                <td>${dataStr}</td>
+                <td class="td-file" title="${arquivo}">${arquivo}</td>
+                <td>${badgeTemp(temp)}</td>
+                <td>${badgeSentiment(sentCliente)}</td>
+                <td class="td-nota">${nota}</td>
+                <td>${badgeClassif(classif)}</td>
+                <td>${badgeStatusHtml}</td>
+                <td>${alerta ? '<span style="width:8px; height:8px; background:var(--jrc-danger); border-radius:50%; display:inline-block; box-shadow:0 0 6px var(--jrc-danger);"></span>' : '<span style="color:var(--jrc-muted)">—</span>'}</td>
+              </tr>`;
+            } catch (err) {
+              console.error(`Erro ao renderizar linha ${idx}:`, err);
+              return `<tr><td colspan="8" class="table-empty" style="padding: 8px; color: var(--jrc-danger)">Erro de renderização do registro</td></tr>`;
+            }
           }).join('');
 
         } catch (e) {
@@ -2265,9 +2359,8 @@
       async function obterWhisperSilencioso(modelName) {
         if (whisperPipeline && whisperModelCarregado === modelName) return whisperPipeline;
 
-        progressWrap.style.display = 'block';
+        setProcessingState(true);
         progressText.textContent = 'IA JRC analisando a chamada. Isso pode levar alguns instantes...';
-        setButtons(true);
 
         try {
           whisperPipeline = await pipeline('automatic-speech-recognition', modelName, {
@@ -2300,35 +2393,94 @@
       }
 
       // ======================================================
+      // GERENCIADOR DE ESTADO DE LOADING UNIFICADO
+      // ======================================================
+      function setProcessingState(isProcessing) {
+        setButtons(isProcessing);
+        if (isProcessing) {
+          btnAnalisar.innerHTML = `
+            <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation: spin 1s infinite linear; display:inline-block; margin-right:6px; vertical-align:middle;">
+              <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)"/>
+              <path d="M4 12a8 8 0 018-8v8H4z" fill="currentColor"/>
+            </svg>
+            Analisando...
+          `;
+          progressWrap.style.display = 'block';
+          progressFill.className = 'progress-fill indeterminate';
+          progressPct.style.display = 'none';
+        } else {
+          btnAnalisar.innerHTML = `
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:middle; margin-right:4px;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+            Analisar gravação
+          `;
+          progressWrap.style.display = 'none';
+        }
+      }
+
+      // ======================================================
+      // CONTROLE DE CLIQUE ÚNICO E DRAG & DROP INTERATIVO
+      // ======================================================
+      selectFileButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        audioInput.click();
+      });
+
+      uploadDropzone.addEventListener('click', (e) => {
+        // Se o clique foi originado no botão de seleção, já tratamos com stopPropagation
+        audioInput.click();
+      });
+
+      uploadDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadDropzone.style.borderColor = 'var(--jrc-success)';
+        uploadDropzone.style.background = 'rgba(37, 183, 122, 0.04)';
+      });
+
+      uploadDropzone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadDropzone.style.borderColor = '#b8d6e8';
+        uploadDropzone.style.background = '#f8fbfe';
+      });
+
+      uploadDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadDropzone.style.borderColor = '#b8d6e8';
+        uploadDropzone.style.background = '#f8fbfe';
+
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          audioInput.files = files;
+          // Disparar evento de change programaticamente para rodar o feedback de upload
+          const event = new Event('change');
+          audioInput.dispatchEvent(event);
+        }
+      });
+
+      // ======================================================
       // FLUXO UNIFICADO DE ANÁLISE (FORM SUBMISSION EXCLUSIVO)
       // ======================================================
       uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const file = audioInput.files[0];
+        const file = arquivoSelecionado || audioInput.files[0];
         if (!file) {
           alert('Por favor, selecione um arquivo de áudio antes de prosseguir.');
           return;
         }
 
-        setButtons(true);
-        btnAnalisar.innerHTML = `
-          <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation: spin 1s infinite linear; display:inline-block; margin-right:6px; vertical-align:middle;">
-            <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)"/>
-            <path d="M4 12a8 8 0 018-8v8H4z" fill="currentColor"/>
-          </svg>
-          Analisando...
-        `;
-
-        progressWrap.style.display = 'block';
-        progressFill.className = 'progress-fill indeterminate';
-        progressPct.style.display = 'none';
+        setProcessingState(true);
 
         if (openaiConfigurada) {
           // FLUXO OFICIAL SERVER-SIDE
           progressText.textContent = 'Enviando gravação para análise...';
           setStatus('☁️ Enviando gravação para análise...', 'loading');
           
-          setTimeout(() => {
+          const waitMessageTimeout = setTimeout(() => {
             if (progressText.textContent === 'Enviando gravação para análise...') {
               progressText.textContent = 'IA JRC analisando a chamada. Isso pode levar alguns instantes...';
               setStatus('⚙️ IA JRC analisando a chamada. Isso pode levar alguns instantes...', 'loading');
@@ -2353,13 +2505,8 @@
             setStatus('❌ Não foi possível concluir a análise. Verifique o áudio ou tente novamente.', 'error');
             progressText.textContent = 'Não foi possível concluir a análise. Verifique o áudio ou tente novamente.';
           } finally {
-            setButtons(false);
-            btnAnalisar.innerHTML = `
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:middle; margin-right:4px;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
-              </svg>
-              Analisar gravação
-            `;
+            clearTimeout(waitMessageTimeout);
+            setProcessingState(false);
           }
         } else {
           // FLUXO DE FALLBACK SILENCIOSO
@@ -2396,13 +2543,7 @@
             setStatus('❌ Não foi possível concluir a análise. Verifique o áudio ou tente novamente.', 'error');
             progressText.textContent = 'Não foi possível concluir a análise. Verifique o áudio ou tente novamente.';
           } finally {
-            setButtons(false);
-            btnAnalisar.innerHTML = `
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:middle; margin-right:4px;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
-              </svg>
-              Analisar gravação
-            `;
+            setProcessingState(false);
           }
         }
       });
