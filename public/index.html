@@ -31,7 +31,7 @@
         --jrc-danger: #ef4f4f;
         --jrc-purple: #7357ff;
 
-        /* Shadows & Radius */
+        /* Radius */
         --jrc-radius-sm: 8px;
         --jrc-radius-md: 12px;
         --jrc-radius-lg: 16px;
@@ -67,7 +67,7 @@
         letter-spacing: -0.02em;
       }
 
-      /* Dark header wrap that contains topbar and hero */
+      /* Dark header wrap */
       .jrc-dark-header-wrap {
         background-color: var(--jrc-deep);
         background-image: 
@@ -86,7 +86,7 @@
           radial-gradient(rgba(32, 185, 242, 0.1) 1px, transparent 0);
         background-size: 24px 24px;
         background-position: 0 0, 12px 12px;
-        opacity: 0.18;
+        opacity: 0.15;
         pointer-events: none;
       }
 
@@ -168,7 +168,7 @@
       }
 
       /* ====================================================
-         HERO SECTION (APRESENTAÇÃO STAND)
+         HERO SECTION (APRESENTAÇÃO COMERCIAL)
          ==================================================== */
       .jrc-hero {
         max-width: 1400px;
@@ -234,7 +234,6 @@
         align-items: center;
       }
 
-      /* Botão Hero Analisar */
       .btn-hero-premium {
         display: inline-flex;
         align-items: center;
@@ -262,7 +261,7 @@
       }
 
       /* ====================================================
-         MAIN CONTAINER & VALUE STRIP (PILARESS)
+         MAIN CONTAINER & VALUE STRIP
          ==================================================== */
       .jrc-main-container {
         max-width: 1400px;
@@ -409,7 +408,7 @@
       }
 
       /* ====================================================
-         PAINEL DE RESULTADOS DE MONITORIA (WIDTH TOTAL)
+         PAINEL DE RESULTADOS DE MONITORIA (VISUAL PREMIUM)
          ==================================================== */
       .audit-card {
         background: var(--jrc-white);
@@ -419,7 +418,7 @@
         box-shadow: var(--jrc-shadow);
         display: none;
         flex-direction: column;
-        gap: 20px;
+        gap: 24px;
         animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
@@ -438,19 +437,416 @@
 
       .audit-card-header h3 {
         font-family: var(--jrc-font);
-        font-size: 18px;
+        font-size: 19px;
         font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--jrc-navy);
+      }
+
+      /* Novo Cabeçalho Executivo do Resultado */
+      .audit-executive-header {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 24px;
+        background: #f8fbfe;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-lg);
+        padding: 24px;
+      }
+
+      @media (max-width: 900px) {
+        .audit-executive-header {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .executive-badges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 16px;
+      }
+
+      .exec-badge-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        background: #ffffff;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-md);
+        padding: 12px;
+      }
+
+      .exec-badge-label {
+        font-family: var(--jrc-font);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--jrc-muted);
+        letter-spacing: 0.06em;
+      }
+
+      .exec-badge-val {
+        align-self: flex-start;
+      }
+
+      /* Destaque de Nota & Classificação */
+      .executive-score-box {
+        background: #ffffff;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-lg);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 4px 15px rgba(6, 42, 68, 0.02);
+      }
+
+      .score-circle-exec {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        border: 5px solid var(--jrc-border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: #ffffff;
+      }
+
+      .score-circle-exec .num {
+        font-family: var(--jrc-font);
+        font-size: 26px;
+        font-weight: 900;
+        color: var(--jrc-navy);
+        line-height: 1;
+      }
+
+      .score-circle-exec .denom {
+        font-size: 10px;
+        color: var(--jrc-muted);
+        font-weight: 700;
+      }
+
+      .score-excellent { border-color: var(--jrc-success); box-shadow: 0 0 14px rgba(37, 183, 122, 0.25); }
+      .score-good { border-color: #84cc16; }
+      .score-regular { border-color: var(--jrc-warning); }
+      .score-bad { border-color: #ea580c; }
+      .score-critical { border-color: var(--jrc-danger); box-shadow: 0 0 14px rgba(239, 79, 79, 0.25); }
+
+      .score-details-exec {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .score-details-exec h4 {
+        font-family: var(--jrc-font);
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--jrc-navy);
+      }
+
+      .score-details-exec p {
+        font-size: 12px;
+        color: var(--jrc-muted);
+        font-weight: 600;
+      }
+
+      /* Alerta grave box inside result */
+      .alert-box-exec {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 14px 18px;
+        background: rgba(239, 79, 79, 0.05);
+        border: 1px dashed rgba(239, 79, 79, 0.35);
+        border-radius: var(--jrc-radius-md);
+        margin-top: 10px;
+      }
+
+      .alert-box-exec svg {
+        flex-shrink: 0;
+        fill: var(--jrc-danger);
+      }
+
+      .alert-box-exec div h5 {
+        font-family: var(--jrc-font);
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--jrc-danger);
+      }
+
+      .alert-box-exec div p {
+        font-size: 12px;
+        color: #7a2828;
+        font-weight: 500;
+        margin-top: 2px;
+      }
+
+      /* Tabs */
+      .tabs-nav {
+        display: flex;
+        gap: 8px;
+        border-bottom: 2px solid var(--jrc-border);
+        padding-bottom: 8px;
+        margin-top: 12px;
+        overflow-x: auto;
+      }
+
+      .tab-btn {
+        background: transparent;
+        border: none;
+        color: var(--jrc-muted);
+        font-family: var(--jrc-font);
+        font-size: 13.5px;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: var(--jrc-radius-sm);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .tab-btn:hover { 
+        background: #f3f8fc; 
+        color: var(--jrc-navy); 
+      }
+      
+      .tab-btn.active { 
+        background: var(--jrc-navy); 
+        color: #ffffff; 
+        box-shadow: 0 4px 12px rgba(10, 53, 86, 0.15); 
+      }
+
+      .tab-pane { display: none; animation: fadeIn 0.3s ease; }
+      .tab-pane.active { display: block; }
+
+      .panel-group {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 20px;
+      }
+
+      @media (max-width: 900px) { 
+        .panel-group { grid-template-columns: 1fr; } 
+      }
+
+      .panel {
+        background: #ffffff;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-lg);
+        padding: 24px;
+        box-shadow: 0 4px 15px rgba(6, 42, 68, 0.01);
+      }
+
+      .panel h4 {
+        font-family: var(--jrc-font);
+        font-size: 14.5px;
+        font-weight: 800;
+        color: var(--jrc-navy);
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--jrc-border);
         display: flex;
         align-items: center;
         gap: 8px;
       }
 
+      /* Mini cards grid resumo */
+      .resumo-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .resumo-mini-card {
+        background: #f8fbfe;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-md);
+        padding: 12px 14px;
+      }
+
+      .resumo-mini-card h5 {
+        font-family: var(--jrc-font);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--jrc-muted);
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+      }
+
+      .resumo-mini-card p {
+        font-size: 12.5px;
+        color: var(--jrc-deep);
+        font-weight: 550;
+        line-height: 1.4;
+      }
+
+      /* Critérios progress bars */
+      .criterios-panel-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .criterio-progress-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .criterio-label-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--jrc-deep);
+      }
+
+      .criterio-progress-bar {
+        height: 8px;
+        background: #eef4f8;
+        border-radius: 99px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .criterio-progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.4s ease;
+      }
+
+      /* Indicators list boolean badges */
+      .indicators-flex-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+      }
+
+      .indicator-boolean-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8fbfe;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-sm);
+        padding: 10px 14px;
+      }
+
+      .indicator-boolean-row span:first-child {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--jrc-deep);
+      }
+
+      /* Bullet lists style */
+      .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+      .bullet-list li {
+        font-size: 12.5px;
+        color: var(--jrc-deep);
+        padding-left: 20px;
+        position: relative;
+        line-height: 1.5;
+        font-weight: 500;
+      }
+      .bullet-list li::before {
+        content: '•';
+        position: absolute;
+        left: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .list-green li::before { color: var(--jrc-success); }
+      .list-red li::before { color: var(--jrc-danger); }
+      .list-amber li::before { color: var(--jrc-warning); }
+      .list-blue li::before { color: var(--jrc-cyan); }
+
+      .empty-list-indicator {
+        font-size: 12.5px;
+        color: var(--jrc-muted);
+        font-style: italic;
+        font-weight: 500;
+      }
+
+      /* Tags */
+      .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+      .tag {
+        font-size: 11px;
+        padding: 4px 12px;
+        border-radius: 99px;
+        background: rgba(32, 185, 242, 0.08);
+        border: 1px solid rgba(32, 185, 242, 0.15);
+        color: var(--jrc-navy);
+        font-weight: 700;
+      }
+
+      /* Scrollbox text */
+      .transcricao-scrollbox {
+        max-height: 380px;
+        overflow-y: auto;
+        background: #f8fbfe;
+        border: 1px solid var(--jrc-border);
+        border-radius: var(--jrc-radius-md);
+        padding: 18px;
+        font-family: var(--jrc-font-body);
+        font-size: 13.5px;
+        color: var(--jrc-deep);
+        line-height: 1.7;
+        white-space: pre-wrap;
+      }
+
+      /* Badges */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-family: var(--jrc-font);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+
+      /* Temperatura classes */
+      .t-fria    { background: rgba(32, 185, 242, 0.08);   border-color: rgba(32, 185, 242, 0.25);   color: var(--jrc-navy); }
+      .t-neutra  { background: #eef4f8;                    border-color: var(--jrc-border);          color: var(--jrc-muted); }
+      .t-quente  { background: rgba(242, 165, 26, 0.08);   border-color: rgba(242, 165, 26, 0.25);   color: var(--jrc-warning); }
+      .t-critica { background: rgba(239, 79, 79, 0.08);    border-color: rgba(239, 79, 79, 0.25);    color: var(--jrc-danger); }
+
+      /* Classificação & sentimentos */
+      .c-excelente { background: rgba(37, 183, 122, 0.08); border-color: rgba(37, 183, 122, 0.25); color: var(--jrc-success); }
+      .c-boa       { background: rgba(132, 204, 22, 0.08); border-color: rgba(132, 204, 22, 0.25);  color: #65a30d; }
+      .c-regular   { background: rgba(242, 165, 26, 0.08); border-color: rgba(242, 165, 26, 0.25);  color: var(--jrc-warning); }
+      .c-ruim      { background: rgba(234, 88, 12, 0.08);  border-color: rgba(234, 88, 12, 0.25);  color: #ea580c; }
+      .c-critica   { background: rgba(239, 79, 79, 0.08);  border-color: rgba(239, 79, 79, 0.25);   color: var(--jrc-danger); }
+
+      /* Status */
+      .s-aprovada                 { background: rgba(37, 183, 122, 0.08); border-color: rgba(37, 183, 122, 0.25); color: var(--jrc-success); }
+      .s-aprovada_com_observacao  { background: rgba(242, 165, 26, 0.08); border-color: rgba(242, 165, 26, 0.25); color: var(--jrc-warning); }
+      .s-reprovada                { background: rgba(234, 88, 12, 0.08);  border-color: rgba(234, 88, 12, 0.25);  color: #ea580c; }
+      .s-critica_para_supervisao  { background: rgba(239, 79, 79, 0.08);  border-color: rgba(239, 79, 79, 0.25);   color: var(--jrc-danger); }
+
+      .b-sim { background: rgba(239, 79, 79, 0.08); border-color: rgba(239, 79, 79, 0.2); color: var(--jrc-danger); }
+      .b-sim-pos { background: rgba(37, 183, 122, 0.08); border-color: rgba(37, 183, 122, 0.2); color: var(--jrc-success); }
+      .b-nao { background: #eef4f8;                      border-color: var(--jrc-border);         color: var(--jrc-muted); }
+
       /* ====================================================
-         ÁREA INFERIOR (3 BLOCOS HORIZONTAIS)
+         ÁREA INFERIOR (2 BLOCOS HORIZONTAIS)
          ==================================================== */
       .bottom-layout-grid {
         display: grid;
-        grid-template-columns: 360px 1fr 340px;
+        grid-template-columns: 32% 68%;
         gap: 24px;
       }
 
@@ -482,7 +878,7 @@
 
       /* CARD 1: ANALISAR GRAVAÇÃO */
       .upload-instructions {
-        font-size: 12px;
+        font-size: 12.5px;
         color: var(--jrc-muted);
         line-height: 1.5;
         margin-bottom: 18px;
@@ -494,7 +890,7 @@
         background: #f8fbfe;
         border: 2px dashed #b8d6e8;
         border-radius: var(--jrc-radius-md);
-        padding: 24px 16px;
+        padding: 28px 16px;
         text-align: center;
         cursor: pointer;
         display: flex;
@@ -524,7 +920,7 @@
       }
 
       .drag-drop-sub {
-        font-size: 10px;
+        font-size: 10.5px;
         color: var(--jrc-muted);
         font-weight: 500;
       }
@@ -539,25 +935,15 @@
       .selected-badge {
         display: none;
         margin-top: 12px;
-        background: rgba(37, 183, 122, 0.08);
-        border: 1px solid rgba(37, 183, 122, 0.25);
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 12px;
-        color: var(--jrc-success);
-        font-weight: 600;
-        word-break: break-all;
-        align-items: center;
-        gap: 6px;
       }
 
       .btn-submit-premium {
         width: 100%;
-        height: 46px;
+        height: 48px;
         background: linear-gradient(135deg, var(--jrc-navy) 0%, #0e4b77 100%);
         color: #ffffff;
         font-family: var(--jrc-font);
-        font-size: 14px;
+        font-size: 14.5px;
         font-weight: 800;
         border-radius: 99px;
         border: none;
@@ -575,6 +961,75 @@
         background: linear-gradient(135deg, #0e4b77 0%, var(--jrc-deep) 100%);
         box-shadow: 0 6px 16px rgba(10, 53, 86, 0.25);
         transform: translateY(-1px);
+      }
+
+      .btn-submit-premium:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* Indeterminate loading bar */
+      .progress-wrap {
+        margin-top: 16px;
+      }
+
+      .progress-bar {
+        height: 6px;
+        background: #eef4f8;
+        border-radius: 99px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-fill.indeterminate {
+        height: 100%;
+        background: linear-gradient(90deg, var(--jrc-cyan), var(--jrc-navy));
+        border-radius: 99px;
+        width: 40% !important;
+        position: relative;
+        animation: indeterminate-loading 1.6s infinite linear;
+      }
+
+      @keyframes indeterminate-loading {
+        0% { left: -40%; }
+        100% { left: 100%; }
+      }
+
+      .status-box {
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: var(--jrc-radius-md);
+        font-size: 12.5px;
+        font-weight: 600;
+        display: none;
+        line-height: 1.5;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn { 
+        from { opacity: 0; transform: translateY(-4px); } 
+        to { opacity: 1; transform: translateY(0); } 
+      }
+
+      .status-box.loading {
+        display: block;
+        background: rgba(32, 185, 242, 0.08);
+        border: 1px solid rgba(32, 185, 242, 0.22);
+        color: var(--jrc-navy);
+      }
+
+      .status-box.success {
+        display: block;
+        background: rgba(37, 183, 122, 0.08);
+        border: 1px solid rgba(37, 183, 122, 0.25);
+        color: var(--jrc-success);
+      }
+
+      .status-box.error {
+        display: block;
+        background: rgba(239, 79, 79, 0.08);
+        border: 1px solid rgba(239, 79, 79, 0.25);
+        color: var(--jrc-danger);
       }
 
       /* CARD 2: HISTÓRICO */
@@ -603,7 +1058,7 @@
       }
 
       td {
-        padding: 11px 14px;
+        padding: 12px 14px;
         border-bottom: 1px solid var(--jrc-border);
         color: var(--jrc-deep);
         font-weight: 500;
@@ -617,7 +1072,7 @@
       tbody tr:hover { background: rgba(32, 185, 242, 0.05); }
       tbody tr.selected { background: rgba(19, 168, 232, 0.08); border-left: 3px solid var(--jrc-cyan); }
 
-      .td-file { font-weight: 700; color: var(--jrc-navy); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .td-file { font-weight: 700; color: var(--jrc-navy); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .td-nota { font-family: var(--jrc-font); font-weight: 800; font-size: 13.5px; color: var(--jrc-navy); }
 
       .link-more {
@@ -633,96 +1088,21 @@
 
       .link-more:hover { color: var(--jrc-blue); }
 
-      /* CARD 3: INTEGRAÇÃO PABX JRC */
-      .card-dark {
-        background: linear-gradient(135deg, var(--jrc-deep) 0%, #08263d 100%);
-        border: 1px solid rgba(32, 185, 242, 0.3);
-        border-radius: var(--jrc-radius-lg);
-        padding: 24px;
-        box-shadow: var(--jrc-shadow-strong);
-        color: #ffffff;
-        display: flex;
-        flex-direction: column;
+      .table-empty {
+        text-align: center;
+        color: var(--jrc-muted);
+        padding: 60px 20px;
+        font-size: 13.5px;
+        font-weight: 500;
       }
 
-      .card-dark .card-header-inner {
-        border-bottom-color: rgba(255, 255, 255, 0.1);
-      }
+      /* Webkit scrollbar */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: var(--jrc-bg); }
+      ::-webkit-scrollbar-thumb { background: #b8d6e8; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--jrc-cyan); }
 
-      .card-dark .card-header-inner h3 {
-        color: #ffffff;
-      }
-
-      .pabx-desc {
-        font-size: 11.5px;
-        line-height: 1.5;
-        color: #bce3f7;
-        margin-bottom: 20px;
-        font-weight: 400;
-      }
-
-      .pabx-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-bottom: 24px;
-      }
-
-      .pabx-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 12.5px;
-        font-weight: 550;
-      }
-
-      .pabx-icon {
-        color: var(--jrc-cyan);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .dot-green {
-        width: 8px;
-        height: 8px;
-        background: var(--jrc-success);
-        border-radius: 50%;
-        box-shadow: 0 0 6px var(--jrc-success);
-      }
-
-      .btn-dark-saiba {
-        margin-top: auto;
-        height: 38px;
-        border-radius: 99px;
-        border: 1px solid rgba(32, 185, 242, 0.4);
-        background: rgba(255, 255, 255, 0.05);
-        color: #ffffff;
-        font-family: var(--jrc-font);
-        font-size: 12.5px;
-        font-weight: 700;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.25s;
-      }
-
-      .btn-dark-saiba:hover {
-        background: rgba(32, 185, 242, 0.15);
-        border-color: var(--jrc-cyan);
-      }
-
-      @media (max-width: 1024px) {
-        .bottom-layout-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      /* ====================================================
-         FOOTER FINO AZUL ESCURO
-         ==================================================== */
+      /* Footer */
       .jrc-footer {
         background: var(--jrc-deep);
         border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -741,15 +1121,17 @@
         color: rgba(255, 255, 255, 0.6);
       }
 
-      @media (max-width: 768px) {
-        .jrc-footer {
-          flex-direction: column;
-          gap: 10px;
-          text-align: center;
+      /* Hide elements */
+      .hidden-system-config {
+        display: none !important;
+      }
+
+      @media (max-width: 1024px) {
+        .bottom-layout-grid {
+          grid-template-columns: 1fr;
         }
       }
 
-      /* Responsive adaptations */
       @media (max-width: 1280px) {
         .jrc-hero {
           grid-template-columns: 1fr;
@@ -788,7 +1170,6 @@
       <!-- TOPBAR HORIZONTAL -->
       <header class="jrc-topbar">
         <div class="jrc-brand">
-          <!-- Logo ou fallback text cloud -->
           <img class="jrc-brand-logo" src="/logo-jrc-cloud.png" onerror="this.src='/logo-jrc.png'" alt="Grupo JRC Logo" />
           <div class="jrc-brand-text">
             <h1 class="jrc-topbar-title">JRC Voice Analytics</h1>
@@ -802,7 +1183,7 @@
         </div>
       </header>
 
-      <!-- HERO BANNERS (MOCKUP APPROVED) -->
+      <!-- HERO BANNERS (APRESENTAÇÃO STAND) -->
       <section class="jrc-hero">
         
         <!-- Lado esquerdo: Logo JRC brilhante na nuvem -->
@@ -962,7 +1343,7 @@
             </div>
             <span>Total Auditado</span>
           </div>
-          <div class="kpi-value" id="mTotal">1.248</div>
+          <div class="kpi-value" id="mTotal">—</div>
           <div class="kpi-footer">
             <div class="kpi-trend trend-green">+18,5% vs mês anterior ↗</div>
             <div class="sparkline-wrap">
@@ -981,7 +1362,7 @@
             </div>
             <span>Nota Média</span>
           </div>
-          <div class="kpi-value" id="mNota">87,6</div>
+          <div class="kpi-value" id="mNota">—</div>
           <div class="kpi-footer">
             <div class="kpi-trend trend-green">+6,2% vs mês anterior ↗</div>
             <div class="sparkline-wrap">
@@ -1000,7 +1381,7 @@
             </div>
             <span>Alertas</span>
           </div>
-          <div class="kpi-value" id="mAlert">24</div>
+          <div class="kpi-value" id="mAlert">—</div>
           <div class="kpi-footer">
             <div class="kpi-trend trend-green">-8,3% vs mês anterior ↘</div>
             <div class="sparkline-wrap">
@@ -1019,7 +1400,7 @@
             </div>
             <span>Chamadas Críticas</span>
           </div>
-          <div class="kpi-value" id="mCrit">17</div>
+          <div class="kpi-value" id="mCrit">—</div>
           <div class="kpi-footer">
             <div class="kpi-trend trend-green">-12,5% vs mês anterior ↘</div>
             <div class="sparkline-wrap">
@@ -1038,7 +1419,7 @@
             </div>
             <span>Conversas Quentes</span>
           </div>
-          <div class="kpi-value" id="mHot">132</div>
+          <div class="kpi-value" id="mHot">—</div>
           <div class="kpi-footer">
             <div class="kpi-trend trend-green">+15,7% vs mês anterior ↗</div>
             <div class="sparkline-wrap">
@@ -1057,7 +1438,7 @@
             </div>
             <span>Risco de Churn</span>
           </div>
-          <div class="kpi-value" id="mChurn">8,4%</div>
+          <div class="kpi-value" id="mChurn">—</div>
           <div class="kpi-footer">
             <div class="kpi-trend trend-green">-2,1% vs mês anterior ↘</div>
             <div class="sparkline-wrap">
@@ -1072,7 +1453,7 @@
       <section class="audit-card" id="auditPanel">
         <div class="audit-card-header">
           <h3>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="color:var(--jrc-navy);">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Resultado da Monitoria
@@ -1081,56 +1462,72 @@
         </div>
 
         <div class="audit-content" id="auditContent">
-          <!-- Badges rápidos de sentimento, temperatura e risco -->
-          <div class="audit-badges">
-            <div class="badge-item">
-              <span class="badge-item-label">Temperatura</span>
-              <span class="badge" id="aTemp">neutra</span>
-            </div>
-            <div class="badge-item">
-              <span class="badge-item-label">Cliente</span>
-              <span class="badge" id="aSentCliente">neutro</span>
-            </div>
-            <div class="badge-item">
-              <span class="badge-item-label">Atendente</span>
-              <span class="badge" id="aSentAtendente">neutro</span>
-            </div>
-            <div class="badge-item">
-              <span class="badge-item-label">Risco Churn</span>
-              <span class="badge" id="aChurn">baixo</span>
-            </div>
-            <div class="badge-item">
-              <span class="badge-item-label">Risco Reclamação</span>
-              <span class="badge" id="aRecl">baixo</span>
-            </div>
-            <div class="badge-item">
-              <span class="badge-item-label">Tom Cliente</span>
-              <span id="aTomCliente" style="font-size:12.5px; font-weight:700; color:var(--jrc-navy);">—</span>
-            </div>
-            <div class="badge-item">
-              <span class="badge-item-label">Tom Atendente</span>
-              <span id="aTomAtendente" style="font-size:12.5px; font-weight:700; color:var(--jrc-navy);">—</span>
-            </div>
-          </div>
+          
+          <!-- NOVO CABEÇALHO EXECUTIVO DO RESULTADO -->
+          <div class="audit-executive-header">
+            
+            <!-- Lado Esquerdo: Badges Dinâmicas -->
+            <div class="executive-badges-grid">
+              
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Temperatura</span>
+                <span class="exec-badge-val" id="aTemp">--</span>
+              </div>
+              
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Sentimento Cliente</span>
+                <span class="exec-badge-val" id="aSentCliente">--</span>
+              </div>
+              
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Sentimento Atendente</span>
+                <span class="exec-badge-val" id="aSentAtendente">--</span>
+              </div>
+              
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Risco Churn</span>
+                <span class="exec-badge-val" id="aChurn">--</span>
+              </div>
+              
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Risco Reclamação</span>
+                <span class="exec-badge-val" id="aRecl">--</span>
+              </div>
 
-          <!-- Nota circular & Classificação principal -->
-          <div class="score-row">
-            <div class="score-circle" id="scoreCircle">
-              <span class="num" id="scoreNum">0</span>
-              <span class="denom">/100</span>
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Tom Cliente</span>
+                <span id="aTomCliente" style="font-size:12.5px; font-weight:700; color:var(--jrc-navy);">--</span>
+              </div>
+
+              <div class="exec-badge-item">
+                <span class="exec-badge-label">Tom Atendente</span>
+                <span id="aTomAtendente" style="font-size:12.5px; font-weight:700; color:var(--jrc-navy);">--</span>
+              </div>
+              
             </div>
-            <div class="score-info">
-              <h3 id="scoreLabel">Classificação: —</h3>
-              <p>Status da Monitoria: <span id="scoreStatus" style="font-weight:800;">—</span></p>
+
+            <!-- Lado Direito: Destaque de Nota, Classificação & Status -->
+            <div class="executive-score-box">
+              <div class="score-circle-exec" id="scoreCircle">
+                <span class="num" id="scoreNum">--</span>
+                <span class="denom">/100</span>
+              </div>
+              
+              <div class="score-details-exec">
+                <h4 id="scoreLabel">Classificação: --</h4>
+                <p>Status: <span id="scoreStatus" style="font-weight:800; font-size:12.5px;">--</span></p>
+                <div id="alertaBadgeContainer"></div>
+              </div>
             </div>
+
           </div>
 
           <!-- Alerta de supervisão grave se ativado -->
-          <div class="alert-box" id="alertBox" style="display:none;">
-            <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          <div class="alert-box-exec" id="alertBox" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
             <div>
-              <h4>Alerta de Supervisão Acionado</h4>
-              <p id="alertMotivo">—</p>
+              <h5>Alerta de Supervisão Crítico Acionado</h5>
+              <p id="alertMotivo">--</p>
             </div>
           </div>
 
@@ -1140,71 +1537,86 @@
             <button class="tab-btn" data-tab="tabAtendente">Critérios Operacionais</button>
             <button class="tab-btn" data-tab="tabAuditoria">Pontos de Auditoria</button>
             <button class="tab-btn" data-tab="tabTranscricao">Transcrição da Chamada</button>
-            <button class="tab-btn" data-tab="tabJson">Dados JSON</button>
           </div>
 
           <!-- SUB-TABS CONTENT -->
+          
+          <!-- TAB 1: RESUMO DA EXPERIÊNCIA -->
           <div class="tab-pane active" id="tabResumo">
             <div class="panel-group">
               <div class="panel">
                 <h4>📋 Resumo do Atendimento</h4>
-                <p id="aResumo" style="font-size:13.5px; color:var(--jrc-deep); line-height:1.75; font-weight:500;">—</p>
+                <p id="aResumo" style="font-size:13.5px; color:var(--jrc-deep); line-height:1.75; font-weight:500; margin-bottom:12px;">--</p>
+                
                 <h4 style="margin-top:20px;">🏷️ Assuntos abordados</h4>
                 <div class="tags" id="aAssuntos"></div>
+                
+                <!-- Mini-cards de sensação, motivo, necessidade e desfecho -->
+                <div class="resumo-mini-grid" id="resumoMiniGrid">
+                  <!-- Renderizado dinamicamente -->
+                </div>
               </div>
+              
               <div class="panel">
-                <h4>🔍 Indicadores Comportamentais</h4>
-                <div id="aIndicadores" style="display:flex; flex-direction:column; gap:9px;"></div>
+                <h4>🔍 Contexto e Sensação da Conversa</h4>
+                <p style="font-size:12.5px; color:var(--jrc-muted); font-weight:600; margin-bottom:14px;">Análise comportamental gerada pela inteligência de voz JRC.</p>
+                <div id="aContextoComportamental" style="display:flex; flex-direction:column; gap:12px;"></div>
               </div>
             </div>
           </div>
 
+          <!-- TAB 2: CRITÉRIOS OPERACIONAIS -->
           <div class="tab-pane" id="tabAtendente">
             <div class="panel">
-              <h4>📊 Avaliação Detalhada dos Critérios de Atendimento</h4>
-              <div class="notas-grid" id="notasGrid"></div>
+              <h4>📊 Avaliação Detalhada dos Critérios Operacionais JRC</h4>
+              <div class="criterios-panel-list" id="criteriosPanelList">
+                <!-- Progress bars renderizadas dinamicamente -->
+              </div>
             </div>
           </div>
 
+          <!-- TAB 3: PONTOS DE AUDITORIA -->
           <div class="tab-pane" id="tabAuditoria">
             <div class="panel-group">
               <div class="panel">
-                <h4 style="color:var(--jrc-success);">✅ Pontos Positivos</h4>
+                <h4 style="color:var(--jrc-navy);">📋 Indicadores Comportamentais</h4>
+                <div class="indicators-flex-grid" id="aIndicadores">
+                  <!-- Renderizado dinamicamente com SIM/NÃO dinâmico -->
+                </div>
+                
+                <h4 style="color:var(--jrc-success); margin-top:24px;">✅ Pontos Positivos</h4>
                 <ul class="bullet-list list-green" id="aPositivos"></ul>
-                <h4 style="color:var(--jrc-danger); margin-top:20px;">❌ Desvios & Pontos Negativos</h4>
-                <ul class="bullet-list list-red" id="aNegativos"></ul>
               </div>
+              
               <div class="panel">
-                <h4 style="color:var(--jrc-warning);">💡 Oportunidades de Melhoria</h4>
+                <h4 style="color:var(--jrc-danger);">❌ Desvios & Pontos Negativos</h4>
+                <ul class="bullet-list list-red" id="aNegativos"></ul>
+                
+                <h4 style="color:var(--jrc-warning); margin-top:20px;">💡 Oportunidades de Melhoria</h4>
                 <ul class="bullet-list list-amber" id="aMelhorias"></ul>
-                <h4 style="color:var(--jrc-navy); margin-top:20px;">🎓 Treinamentos Recomendados</h4>
+                
+                <h4 style="color:var(--jrc-navy); margin-top:20px;">🎓 Plano de Treinamento Recomendado</h4>
                 <ul class="bullet-list list-blue" id="aTreinamentos"></ul>
               </div>
             </div>
           </div>
 
+          <!-- TAB 4: TRANSCRIÇÃO DA CHAMADA -->
           <div class="tab-pane" id="tabTranscricao">
             <div class="panel">
               <h4>🎙️ Texto Transcrito da Chamada</h4>
-              <p id="aConfTranscricao" class="text-muted mt-8" style="font-weight:600; margin-bottom:8px;"></p>
-              <pre id="aTranscricao" style="margin-top:12px; font-weight:500; font-size:12.5px;"></pre>
-            </div>
-          </div>
-
-          <div class="tab-pane" id="tabJson">
-            <div class="panel">
-              <h4>{ } Payload Bruto (JSON da Monitoria)</h4>
-              <pre id="aJson" style="margin-top:12px;"></pre>
+              <p id="aConfTranscricao" class="text-muted" style="font-weight:600; margin-bottom:12px; font-size:12px;"></p>
+              <div class="transcricao-scrollbox" id="aTranscricao"></div>
             </div>
           </div>
 
         </div>
       </section>
 
-      <!-- SEÇÃO INFERIOR EM 3 BLOCOS (MOCKUP COMPACT LAYOUT) -->
+      <!-- SEÇÃO INFERIOR EM 2 BLOCOS HORIZONTAIS -->
       <section class="bottom-layout-grid">
         
-        <!-- BLOCO 1: ANALISAR GRAVAÇÃO -->
+        <!-- BLOCO 1: ANALISAR GRAVAÇÃO (35% LARGURA) -->
         <div class="card-white" id="uploadSection">
           <div class="card-header-inner">
             <div style="color:var(--jrc-cloud); display:flex; align-items:center; justify-content:center;">
@@ -1241,30 +1653,20 @@
 
             <!-- Selected File Indicator -->
             <div class="selected-badge" id="fileSelectedBadge">
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              <span id="selectedFileName">Nenhum arquivo selecionado</span>
+              <!-- Renderizado dinamicamente com nome do arquivo e status -->
             </div>
 
-            <!-- HIDDEN DOM SYSTEM CONFIGS -->
-            <div class="hidden-system-config">
-              <select id="whisperModel">
-                <option value="Xenova/whisper-small" selected>whisper-small</option>
-              </select>
-              <button type="button" id="btnLocal"></button>
-              <button type="button" id="btnOpenAI"></button>
-            </div>
+            <!-- Preload invisível do JSON mantido no DOM para retrocompatibilidade sem expor visualmente -->
+            <pre id="aJson" class="hidden-system-config"></pre>
 
-            <!-- Progress Indicator -->
-            <div class="progress-wrap" id="progressWrap">
-              <div class="progress-label">
-                <span id="progressText">Processando IA...</span>
-                <span id="progressPct">0%</span>
-              </div>
+            <!-- Indeterminate Progress Indicator (Sem porcentagens na UI comercial) -->
+            <div class="progress-wrap" id="progressWrap" style="display: none;">
+              <div class="progress-label" id="progressText">Enviando gravação para análise...</div>
               <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-fill indeterminate" id="progressFill"></div>
               </div>
+              <!-- Elemento oculto para evitar erro de referência no JS original -->
+              <span id="progressPct" class="hidden-system-config">0%</span>
             </div>
 
             <!-- Main Button -->
@@ -1279,7 +1681,7 @@
           <div class="status-box" id="statusBox"></div>
         </div>
 
-        <!-- BLOCO 2: HISTÓRICO DE MONITORIAS -->
+        <!-- BLOCO 2: HISTÓRICO DE MONITORIAS (68% LARGURA) -->
         <div class="card-white history-card-wrap">
           <div class="card-header-inner">
             <div style="color:var(--jrc-cloud); display:flex; align-items:center; justify-content:center;">
@@ -1314,62 +1716,10 @@
             <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:inline-block; vertical-align:middle; margin-right:3px;">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.283 8H18" />
             </svg>
-            Atualizar e ver todas as monitorias >
+            Atualizar histórico >
           </a>
           
           <button id="btnCriticas" class="hidden-system-config"></button>
-        </div>
-
-        <!-- BLOCO 3: INTEGRAÇÃO PABX JRC -->
-        <div class="card-dark">
-          <div class="card-header-inner">
-            <div class="pabx-icon">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-            </div>
-            <h3>Integração PABX JRC</h3>
-          </div>
-
-          <p class="pabx-desc">
-            A plataforma está preparada para importar chamadas diretamente do PABX, consultar ramais, localizar gravações e automatizar a monitoria por tenant.
-          </p>
-
-          <div class="pabx-list">
-            <div class="pabx-item">
-              <div class="pabx-icon">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <span>Tenant JRC: 1008</span>
-            </div>
-
-            <div class="pabx-item">
-              <div class="pabx-icon">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.283 8H18" />
-                </svg>
-              </div>
-              <span>Importação automática: em preparação</span>
-            </div>
-
-            <div class="pabx-item">
-              <div class="pabx-icon">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-              </div>
-              <span>Upload manual: ativo</span>
-            </div>
-
-            <div class="pabx-item">
-              <span class="dot-green"></span>
-              <span>IA JRC: ativa</span>
-            </div>
-          </div>
-
-          <button class="btn-dark-saiba" onclick="alert('Funcionalidade de PABX em roadmap de implantação Grupo JRC.')">Saiba mais</button>
         </div>
 
       </section>
@@ -1404,9 +1754,6 @@
       // ELEMENTOS
       // ======================================================
       const audioInput       = document.getElementById('audioInput');
-      const whisperModel     = document.getElementById('whisperModel');
-      const btnLocal         = document.getElementById('btnLocal');
-      const btnOpenAI        = document.getElementById('btnOpenAI');
       const uploadForm       = document.getElementById('uploadForm');
       const statusBox        = document.getElementById('statusBox');
       const progressWrap     = document.getElementById('progressWrap');
@@ -1419,57 +1766,149 @@
       const systemMode       = document.getElementById('systemMode');
       const btnAnalisar      = document.getElementById('btnAnalisar');
       const fileSelectedBadge = document.getElementById('fileSelectedBadge');
-      const selectedFileName = document.getElementById('selectedFileName');
 
-      // Escuta mudança de arquivo para feedback visual premium
+      // Escuta mudança de arquivo para feedback visual premium conforme especificação
       audioInput.addEventListener('change', () => {
         const file = audioInput.files[0];
         if (file) {
-          fileSelectedBadge.style.display = 'inline-flex';
-          selectedFileName.textContent = file.name;
+          fileSelectedBadge.style.display = 'block';
+          fileSelectedBadge.innerHTML = `
+            <div style="text-align: left; font-size: 12.5px; color: var(--jrc-navy); font-weight: 600; padding: 12px; background: rgba(37, 183, 122, 0.05); border: 1px dashed rgba(37, 183, 122, 0.35); border-radius: 8px; margin-top: 14px; animation: fadeIn 0.25s ease;">
+              <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><strong>Arquivo selecionado:</strong> ${file.name}</div>
+              <div style="margin-top: 6px; font-size:11.5px; color: var(--jrc-success); display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; background:var(--jrc-success); border-radius:50%; display:inline-block;"></span>
+                Status: Arquivo carregado com sucesso.
+              </div>
+            </div>
+          `;
         } else {
           fileSelectedBadge.style.display = 'none';
         }
       });
 
       // ======================================================
-      // UTILITIES
+      // UTILITIES & MAPPINGS DINÂMICOS (FUNÇÕES AUXILIARES)
       // ======================================================
+      function formatarValor(valor) {
+        return valor !== null && valor !== undefined ? valor : '—';
+      }
+
+      function formatarTemperatura(v) {
+        const map = { fria: 'FRIA', neutra: 'NEUTRA', quente: 'QUENTE', critica: 'CRÍTICA' };
+        return map[String(v).toLowerCase()] || String(v || 'NEUTRA').toUpperCase();
+      }
+
+      function formatarSentimento(v) {
+        const map = { positivo: 'POSITIVO', neutro: 'NEUTRO', negativo: 'NEGATIVO', critico: 'CRÍTICO', nao_identificado: 'NÃO IDENTIFICADO' };
+        return map[String(v).toLowerCase()] || String(v || 'NEUTRO').toUpperCase();
+      }
+
+      function formatarRisco(v) {
+        const map = { baixo: 'BAIXO', medio: 'MÉDIO', alto: 'ALTO', critico: 'CRÍTICO' };
+        return map[String(v).toLowerCase()] || String(v || 'BAIXO').toUpperCase();
+      }
+
+      function formatarClassificacao(v) {
+        const map = { excelente: 'EXCELENTE', boa: 'BOA', regular: 'REGULAR', ruim: 'RUIM', critica: 'CRÍTICA' };
+        return map[String(v).toLowerCase()] || String(v || 'REGULAR').toUpperCase();
+      }
+
+      function formatarStatusMonitoria(v) {
+        const map = { 
+          aprovada: 'APROVADA', 
+          aprovada_com_observacao: 'APROVADA COM OBSERVAÇÃO', 
+          reprovada: 'REPROVADA', 
+          critica_para_supervisao: 'CRÍTICA PARA SUPERVISÃO' 
+        };
+        const key = String(v).toLowerCase().trim();
+        return map[key] || String(v || 'APROVADA').replace(/_/g, ' ').toUpperCase();
+      }
+
+      function classeBadgePorTipo(tipo, valor) {
+        const val = String(valor || '').toLowerCase().trim();
+        if (tipo === 'temperatura') {
+          if (val === 'fria') return 't-fria';
+          if (val === 'neutra') return 't-neutra';
+          if (val === 'quente') return 't-quente';
+          if (val === 'critica') return 't-critica';
+        }
+        if (tipo === 'sentimento') {
+          if (val === 'positivo') return 'c-excelente';
+          if (val === 'neutro') return 't-neutra';
+          if (val === 'negativo') return 'c-ruim';
+          if (val === 'critico') return 'c-critica';
+          return 't-neutra';
+        }
+        if (tipo === 'risco') {
+          if (val === 'baixo') return 'c-excelente';
+          if (val === 'medio') return 'c-regular';
+          if (val === 'alto') return 'c-ruim';
+          if (val === 'critico') return 'c-critica';
+        }
+        if (tipo === 'classificacao') {
+          if (val === 'excelente') return 'c-excelente';
+          if (val === 'boa') return 'c-boa';
+          if (val === 'regular') return 'c-regular';
+          if (val === 'ruim') return 'c-ruim';
+          if (val === 'critica') return 'c-critica';
+        }
+        if (tipo === 'status') {
+          if (val === 'aprovada') return 's-aprovada';
+          if (val === 'aprovada_com_observacao') return 's-aprovada_com_observacao';
+          if (val === 'reprovada') return 's-reprovada';
+          if (val === 'critica_para_supervisao') return 's-critica_para_supervisao';
+        }
+        return 't-neutra';
+      }
+
+      function classeNota(nota) {
+        if (nota === null || nota === undefined || isNaN(nota)) return 'score-regular';
+        const n = parseInt(nota);
+        if (n >= 90) return 'score-excellent';
+        if (n >= 75) return 'score-good';
+        if (n >= 60) return 'score-regular';
+        if (n >= 40) return 'score-bad';
+        return 'score-critical';
+      }
+
+      function simNaoBadge(valor, tipoIndicador) {
+        const sim = (valor === true || valor === 'true' || valor === 1 || valor === '1' || String(valor).toLowerCase() === 'sim');
+        let badgeClass = 'b-nao';
+        let badgeText = 'NÃO';
+        
+        if (sim) {
+          badgeText = 'SIM';
+          badgeClass = (tipoIndicador === 'positivo' ? 'b-sim-pos' : 'b-sim');
+        }
+        return `<span class="badge ${badgeClass}">${badgeText}</span>`;
+      }
+
+      function obterMetrica(analise, chave) {
+        if (!analise) return null;
+        if (analise[chave] !== undefined && analise[chave] !== null) return analise[chave];
+        if (analise.avaliacao_atendente && analise.avaliacao_atendente[chave] !== undefined && analise.avaliacao_atendente[chave] !== null) return analise.avaliacao_atendente[chave];
+        if (analise.payload_completo && analise.payload_completo[chave] !== undefined && analise.payload_completo[chave] !== null) return analise.payload_completo[chave];
+        if (analise.payload_completo && analise.payload_completo.avaliacao_atendente && analise.payload_completo.avaliacao_atendente[chave] !== undefined && analise.payload_completo.avaliacao_atendente[chave] !== null) return analise.payload_completo.avaliacao_atendente[chave];
+        return null;
+      }
+
+      function obterNotaFinal(analise) {
+        const notaRaw = obterMetrica(analise, 'nota_final');
+        if (notaRaw !== null && notaRaw !== undefined && !isNaN(notaRaw)) return parseInt(notaRaw);
+        return null;
+      }
+
+      function obterAvaliacaoAtendente(analise) {
+        return analise?.avaliacao_atendente || analise?.payload_completo?.avaliacao_atendente || analise || {};
+      }
+
       function setStatus(msg, type = 'loading') {
         statusBox.className = `status-box ${type}`;
         statusBox.textContent = msg;
       }
 
       function setButtons(disabled) {
-        btnLocal.disabled = disabled;
-        btnOpenAI.disabled = disabled;
         if (btnAnalisar) btnAnalisar.disabled = disabled;
-      }
-
-      function badgeTemp(v) {
-        return `<span class="badge t-${v || 'neutra'}">${v || 'neutra'}</span>`;
-      }
-
-      function badgeClassif(v) {
-        return `<span class="badge c-${v || 'regular'}">${v || 'regular'}</span>`;
-      }
-
-      function badgeStatus(v) {
-        return `<span class="badge s-${v || 'aprovada'}">${(v || 'aprovada').replace(/_/g, ' ')}</span>`;
-      }
-
-      function badgeSentiment(v) {
-        const map = {
-          positivo: 'c-excelente', neutro: 'c-regular',
-          negativo: 'c-ruim', critico: 'c-critica', nao_identificado: 't-neutra',
-        };
-        const cls = map[v] || 't-neutra';
-        return `<span class="badge ${cls}">${v || '—'}</span>`;
-      }
-
-      function badgeRisco(v) {
-        const map = { baixo: 'c-excelente', medio: 'c-regular', alto: 'c-ruim', critico: 'c-critica' };
-        return `<span class="badge ${map[v] || 't-neutra'}">${v || 'baixo'}</span>`;
       }
 
       function renderList(ulId, items) {
@@ -1477,7 +1916,7 @@
         ul.innerHTML = '';
         const arr = Array.isArray(items) ? items : [];
         if (!arr.length) {
-          ul.innerHTML = '<li>Nenhum ponto registrado.</li>';
+          ul.innerHTML = '<span class="empty-list-indicator">Nenhuma informação identificada nesta categoria.</span>';
           return;
         }
         arr.forEach(item => {
@@ -1492,175 +1931,240 @@
         return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
       }
 
-      // ======================================================
-      // TABS NAVEGAÇÃO
-      // ======================================================
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById(btn.dataset.tab)?.classList.add('active');
-        });
-      });
-
-      // ======================================================
-      // EXIBIR DETALHE DE AUDITORIA
-      // ======================================================
-      function exibirAuditoria(analise, transcricao, filename) {
-        if (!analise) return;
-
-        // Exibe o painel de auditoria com transição premium
-        const panel = document.getElementById('auditPanel');
-        panel.style.display = 'flex';
-        
-        document.getElementById('auditFileName').textContent = filename || 'ligação';
-
-        // Badges rápidos
-        const setBadge = (id, cls, text) => {
-          const el = document.getElementById(id);
-          el.className = `badge ${cls}`;
-          el.textContent = text || '—';
-        };
-
-        const tempClass = `t-${analise.temperatura_conversa || 'neutra'}`;
-        setBadge('aTemp', tempClass, analise.temperatura_conversa || 'neutra');
-
-        const sentMap = { positivo:'c-excelente', neutro:'c-regular', negativo:'c-ruim', critico:'c-critica', nao_identificado:'t-neutra' };
-        setBadge('aSentCliente', sentMap[analise.sentimento_cliente] || 't-neutra', analise.sentimento_cliente);
-        setBadge('aSentAtendente', sentMap[analise.sentimento_atendente] || 't-neutra', analise.sentimento_atendente);
-
-        const riscoMap = { baixo:'c-excelente', medio:'c-regular', alto:'c-ruim', critico:'c-critica' };
-        setBadge('aChurn', riscoMap[analise.risco_churn] || 't-neutra', analise.risco_churn || 'baixo');
-        setBadge('aRecl', riscoMap[analise.risco_reclamacao] || 't-neutra', analise.risco_reclamacao || 'baixo');
-
-        document.getElementById('aTomCliente').textContent = analise.tom_cliente || '—';
-        document.getElementById('aTomAtendente').textContent = analise.tom_atendente || '—';
-
-        // Score Circular
-        const av = analise.avaliacao_atendente || {};
-        const nota = av.nota_final ?? analise.nota_final ?? 0;
-        document.getElementById('scoreNum').textContent = nota;
-
-        const circle = document.getElementById('scoreCircle');
-        circle.className = 'score-circle';
-        if (nota >= 90) circle.classList.add('score-excellent');
-        else if (nota >= 75) circle.classList.add('score-good');
-        else if (nota >= 60) circle.classList.add('score-regular');
-        else if (nota >= 40) circle.classList.add('score-bad');
-        else circle.classList.add('score-critical');
-
-        const classif = analise.classificacao_ligacao || 'regular';
-        document.getElementById('scoreLabel').textContent = `Classificação: ${classif.toUpperCase()}`;
-
-        const status = analise.status_monitoria || 'aprovada';
-        const statusEl = document.getElementById('scoreStatus');
-        statusEl.textContent = status.replace(/_/g, ' ').toUpperCase();
-        const statusColorMap = { aprovada: 'var(--jrc-success)', aprovada_com_observacao: 'var(--jrc-warning)', reprovada: '#ea580c', critica_para_supervisao: 'var(--jrc-danger)' };
-        statusEl.style.color = statusColorMap[status] || '#fff';
-
-        // Alerta supervisão grave
-        const alertBox = document.getElementById('alertBox');
-        if (analise.alerta_supervisao) {
-          alertBox.style.display = 'flex';
-          document.getElementById('alertMotivo').textContent = analise.motivo_alerta || 'Situação crítica detectada na chamada.';
-        } else {
-          alertBox.style.display = 'none';
-        }
-
-        // Resumo
-        document.getElementById('aResumo').textContent = analise.resumo_conversa || '—';
+      // --- ABA 1: RESUMO DA EXPERIÊNCIA ---
+      function renderizarResumoExperiencia(analise) {
+        document.getElementById('aResumo').textContent = obterMetrica(analise, 'resumo_conversa') || obterMetrica(analise, 'resumo_atendimento') || 'Resumo da monitoria indisponível.';
 
         // Assuntos abordados
         const assuntosEl = document.getElementById('aAssuntos');
         assuntosEl.innerHTML = '';
-        const assuntos = Array.isArray(analise.assuntos_abordados) ? analise.assuntos_abordados : [];
+        const assuntos = Array.isArray(obterMetrica(analise, 'assuntos_abordados')) ? obterMetrica(analise, 'assuntos_abordados') : [];
         if (!assuntos.length) {
-          assuntosEl.innerHTML = '<span class="tag">outros</span>';
+          assuntosEl.innerHTML = '<span class="tag">OUTROS</span>';
         } else {
           assuntos.forEach(a => {
             const s = document.createElement('span');
             s.className = 'tag';
-            s.textContent = a;
+            s.textContent = String(a).toUpperCase();
             assuntosEl.appendChild(s);
           });
         }
 
-        // Indicadores comportamentais
-        const indicadores = [
-          ['Agressividade do cliente', analise.houve_agressividade_cliente],
-          ['Agressividade do atendente', analise.houve_agressividade_atendente],
-          ['Empatia detectada', analise.houve_empatia],
-          ['Cordialidade detectada', analise.houve_cordialidade],
-          ['Houve interrupções', analise.houve_interrupcao],
-          ['Cliente insatisfeito', analise.cliente_demonstrou_insatisfacao],
-          ['Ameaçou cancelar', analise.cliente_ameacou_cancelar],
-          ['Mencionou Procon/Anatel', analise.cliente_mencionou_procon_anatel],
-          ['Mencionou processo/advogado', analise.cliente_mencionou_processo],
-          ['Problema resolvido', analise.problema_resolvido],
-          ['Necessita retorno', analise.necessita_retorno],
+        // Mini cards do resumo
+        const miniGrid = document.getElementById('resumoMiniGrid');
+        const camposResumo = [
+          ['Sensação da Conversa', obterMetrica(analise, 'sensacao_conversa')],
+          ['Motivo do Contato', obterMetrica(analise, 'motivo_contato')],
+          ['Necessidade do Cliente', obterMetrica(analise, 'necessidade_cliente')],
+          ['Desfecho da Ligação', obterMetrica(analise, 'desfecho_ligacao')]
+        ];
+
+        miniGrid.innerHTML = camposResumo.map(([titulo, valor]) => {
+          if (!valor) return '';
+          return `
+            <div class="resumo-mini-card">
+              <h5>${titulo}</h5>
+              <p>${valor}</p>
+            </div>
+          `;
+        }).join('');
+
+        // Contexto comportamental
+        const contextoComportamentalEl = document.getElementById('aContextoComportamental');
+        const contextualData = [
+          ['Sensação geral', obterMetrica(analise, 'sensacao_conversa') || 'Não identificada'],
+          ['Confiança de análise JRC', obterMetrica(analise, 'confianca_analise') || 'alta'],
+          ['Parecer de monitoria', obterMetrica(analise, 'parecer_monitoria') || 'Atendimento conduzido sob normas vigentes.'],
+          ['Justificativa de nota', obterMetrica(analise, 'justificativa_nota') || 'Critérios pontuados de acordo com diretrizes.']
+        ];
+        
+        contextoComportamentalEl.innerHTML = contextualData.map(([lbl, val]) => `
+          <div style="font-size:12.5px; line-height:1.5; border-bottom:1px solid #f0f6fa; padding-bottom:8px;">
+            <div style="font-weight:700; color:var(--jrc-navy);">${lbl}</div>
+            <div style="font-weight:500; color:var(--jrc-deep); margin-top:2px;">${val}</div>
+          </div>
+        `).join('');
+      }
+
+      // --- ABA 2: CRITÉRIOS OPERACIONAIS ---
+      function renderizarCriteriosOperacionais(analise) {
+        const av = obterAvaliacaoAtendente(analise);
+        const nota = obterNotaFinal(analise) ?? 0;
+        
+        const criterios = [
+          ['Cordialidade do Atendente', av.cordialidade, 10],
+          ['Empatia e Acolhimento', av.empatia, 10],
+          ['Clareza na Comunicação', av.clareza_comunicacao, 10],
+          ['Domínio do Assunto e Scripts', av.dominio_assunto, 10],
+          ['Condução do Diálogo', av.conducao_conversa, 10],
+          ['Resolução Qualificada de Problema', av.resolucao_problema, 15],
+          ['Cumprimento de Protocolos', av.cumprimento_protocolo, 10],
+          ['Controle Emocional Operacional', av.controle_emocional, 10],
+          ['Experiência Global do Cliente', av.experiencia_cliente, 15]
+        ];
+
+        const criteriosPanelList = document.getElementById('criteriosPanelList');
+        criteriosPanelList.innerHTML = criterios.map(([label, val, max]) => {
+          const valorNota = val ?? 0;
+          const percentual = Math.min(100, Math.round((valorNota / max) * 100));
+          let corProgresso = 'var(--jrc-success)';
+          if (percentual < 70) corProgresso = 'var(--jrc-danger)';
+          else if (percentual < 85) corProgresso = 'var(--jrc-warning)';
+
+          return `
+            <div class="criterio-progress-item">
+              <div class="criterio-label-row">
+                <span>${label}</span>
+                <span><strong>${valorNota}/${max}</strong> (${percentual}%)</span>
+              </div>
+              <div class="criterio-progress-bar">
+                <div class="criterio-progress-fill" style="width: ${percentual}%; background-color: ${corProgresso};"></div>
+              </div>
+            </div>
+          `;
+        }).join('') + `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, var(--jrc-navy) 0%, #0e4e7c 100%); color:#ffffff; border-radius:8px; padding:14px 20px; font-family:var(--jrc-font); font-size:15px; font-weight:800; margin-top:10px;">
+            <span>NOTA CONSOLIDADA FINAL OPERACIONAL</span>
+            <span>${nota}/100</span>
+          </div>
+        `;
+      }
+
+      // --- ABA 3: PONTOS DE AUDITORIA ---
+      function renderizarPontosAuditoria(analise) {
+        const booleanIndicators = [
+          ['Agressividade Cliente', obterMetrica(analise, 'houve_agressividade_cliente'), 'risco'],
+          ['Agressividade Atendente', obterMetrica(analise, 'houve_agressividade_atendente'), 'risco'],
+          ['Empatia Detectada', obterMetrica(analise, 'houve_empatia'), 'positivo'],
+          ['Cordialidade Detectada', obterMetrica(analise, 'houve_cordialidade'), 'positivo'],
+          ['Houve Interrupções', obterMetrica(analise, 'houve_interrupcao'), 'risco'],
+          ['Cliente Insatisfeito', obterMetrica(analise, 'cliente_demonstrou_insatisfacao'), 'risco'],
+          ['Ameaçou Cancelar', obterMetrica(analise, 'cliente_ameacou_cancelar'), 'risco'],
+          ['Mencionou Procon/Anatel', obterMetrica(analise, 'cliente_mencionou_procon_anatel'), 'risco'],
+          ['Mencionou Processo', obterMetrica(analise, 'cliente_mencionou_processo'), 'risco'],
+          ['Problema Resolvido', obterMetrica(analise, 'problema_resolvido'), 'positivo'],
+          ['Necessita Retorno', obterMetrica(analise, 'necessita_retorno'), 'risco']
         ];
 
         const indEl = document.getElementById('aIndicadores');
-        indEl.innerHTML = indicadores.map(([label, val]) => {
-          const sim = Boolean(val);
-          const badgeCls = sim ? 'b-sim' : 'b-nao';
-          const badgeText = sim ? 'SIM' : 'NÃO';
-          return `<div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--jrc-deep); padding: 5px 0; border-bottom: 1px solid #f0f6fa;">
-            <span style="font-weight: 500;">${label}</span>
-            <span class="badge ${badgeCls}">${badgeText}</span>
-          </div>`;
-        }).join('');
+        indEl.innerHTML = booleanIndicators.map(([label, val, tipo]) => `
+          <div class="indicator-boolean-row">
+            <span>${label}</span>
+            ${simNaoBadge(val, tipo)}
+          </div>
+        `).join('');
 
-        // Notas detalhadas de critérios
-        const notas = [
-          ['Cordialidade', av.cordialidade, 10],
-          ['Empatia', av.empatia, 10],
-          ['Clareza na Comunicação', av.clareza_comunicacao, 10],
-          ['Domínio do Assunto', av.dominio_assunto, 10],
-          ['Condução da Conversa', av.conducao_conversa, 10],
-          ['Resolução de Problema', av.resolucao_problema, 15],
-          ['Cumprimento de Protocolo', av.cumprimento_protocolo, 10],
-          ['Controle Emocional', av.controle_emocional, 10],
-          ['Experiência do Cliente', av.experiencia_cliente, 15],
-        ];
+        renderList('aPositivos', obterMetrica(analise, 'pontos_positivos'));
+        renderList('aNegativos', obterMetrica(analise, 'pontos_negativos'));
+        renderList('aMelhorias', obterMetrica(analise, 'oportunidades_melhoria'));
+        renderList('aTreinamentos', obterMetrica(analise, 'treinamento_recomendado'));
+      }
 
-        const notasGrid = document.getElementById('notasGrid');
-        notasGrid.innerHTML = notas.map(([label, val, max]) =>
-          `<div class="nota-item">
-            <span class="n-label">${label}</span>
-            <span class="n-val">${val ?? 0}/${max}</span>
-          </div>`
-        ).join('') + `
-          <div class="nota-item total-row">
-            <span class="n-label">PONTUAÇÃO CONSOLIDADA FINAL</span>
-            <span class="n-val">${nota}/100</span>
-          </div>`;
-
-        // Auditoria & Melhorias
-        renderList('aPositivos', analise.pontos_positivos);
-        renderList('aNegativos', analise.pontos_negativos);
-        renderList('aMelhorias', analise.oportunidades_melhoria);
-        renderList('aTreinamentos', analise.treinamento_recomendado);
-
-        // Transcrição
+      // --- ABA 4: TRANSCRIÇÃO ---
+      function renderizarTranscricao(analise, transcricao, filename) {
         const txtTranscricao = transcricao
-          || analise.texto_transcrito
-          || analise.payload_completo?.texto_transcrito
-          || analise.resumo_conversa
-          || '(Transcrição de qualidade indisponível no momento)';
+          || obterMetrica(analise, 'texto_transcrito')
+          || 'Texto transcrito indisponível.';
+          
         document.getElementById('aTranscricao').textContent = txtTranscricao;
 
-        const conf = analise.confianca_transcricao || 'alta';
-        const obs = analise.observacao_transcricao || '';
+        const conf = obterMetrica(analise, 'confianca_transcricao') || 'alta';
+        const obs = obterMetrica(analise, 'observacao_transcricao') || '';
         document.getElementById('aConfTranscricao').textContent =
-          `Confiança da transcrição JRC: ${conf.toUpperCase()}${obs ? ' — ' + obs : ''}`;
+          `Gravação: ${filename || 'Atendimento'} | Confiança de Transcrição: ${String(conf).toUpperCase()} ${obs ? ' (' + obs + ')' : ''}`;
+      }
 
-        // JSON
-        document.getElementById('aJson').textContent = JSON.stringify(analise, null, 2);
+      // ======================================================
+      // EXIBIR DETALHE DE AUDITORIA (DINÂMICO PREMIUM)
+      // ======================================================
+      function exibirAuditoria(analise, transcricao, filename) {
+        if (!analise) return;
 
-        // Scroll suave para os resultados
-        panel.scrollIntoView({ behavior: 'smooth' });
+        // Exibe o painel de auditoria
+        const panel = document.getElementById('auditPanel');
+        if (panel) {
+          panel.style.display = 'flex';
+          panel.scrollIntoView({ behavior: 'smooth' });
+        }
+        document.getElementById('auditFileName').textContent = filename || 'ligação';
+
+        // Cabeçalho Executivo Badges Dinâmicos
+        const setBadgeDynamic = (id, tipo, valor) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          
+          let formatted = '';
+          if (tipo === 'risco') formatted = formatarRisco(valor);
+          else if (tipo === 'temperatura') formatted = formatarTemperatura(valor);
+          else formatted = formatarSentimento(valor);
+          
+          el.className = `badge ${classeBadgePorTipo(tipo, valor)}`;
+          el.textContent = formatted;
+        };
+
+        setBadgeDynamic('aTemp', 'temperatura', obterMetrica(analise, 'temperatura_conversa'));
+        setBadgeDynamic('aSentCliente', 'sentimento', obterMetrica(analise, 'sentimento_cliente'));
+        setBadgeDynamic('aSentAtendente', 'sentimento', obterMetrica(analise, 'sentimento_atendente'));
+        setBadgeDynamic('aChurn', 'risco', obterMetrica(analise, 'risco_churn'));
+        setBadgeDynamic('aRecl', 'risco', obterMetrica(analise, 'risco_reclamacao'));
+
+        document.getElementById('aTomCliente').textContent = String(obterMetrica(analise, 'tom_cliente') || 'NÃO IDENTIFICADO').toUpperCase();
+        document.getElementById('aTomAtendente').textContent = String(obterMetrica(analise, 'tom_atendente') || 'NÃO IDENTIFICADO').toUpperCase();
+
+        // Nota Consolidada IA
+        const nota = obterNotaFinal(analise);
+        document.getElementById('scoreNum').textContent = nota !== null ? nota : '--';
+
+        const circle = document.getElementById('scoreCircle');
+        if (circle) {
+          circle.className = `score-circle-exec ${classeNota(nota)}`;
+        }
+
+        const classif = obterMetrica(analise, 'classificacao_ligacao') || 'regular';
+        document.getElementById('scoreLabel').textContent = `Classificação: ${formatarClassificacao(classif)}`;
+
+        const status = obterMetrica(analise, 'status_monitoria') || 'aprovada';
+        const statusEl = document.getElementById('scoreStatus');
+        if (statusEl) {
+          statusEl.textContent = formatarStatusMonitoria(status);
+          const statusColorMap = {
+            aprovada: 'var(--jrc-success)',
+            aprovada_com_observacao: 'var(--jrc-warning)',
+            reprovada: 'var(--jrc-danger)',
+            critica_para_supervisao: 'var(--jrc-danger)'
+          };
+          statusEl.style.color = statusColorMap[status.toLowerCase()] || 'var(--jrc-navy)';
+        }
+
+        // Alerta de supervisão JRC (SIM / NÃO)
+        const alertBox = document.getElementById('alertBox');
+        const alertBadgeContainer = document.getElementById('alertaBadgeContainer');
+        const alertaSupervisao = obterMetrica(analise, 'alerta_supervisao');
+        
+        if (alertaSupervisao === true || alertaSupervisao === 'true' || alertaSupervisao === 1 || alertaSupervisao === '1' || String(alertaSupervisao).toLowerCase() === 'sim') {
+          if (alertBox) alertBox.style.display = 'flex';
+          document.getElementById('alertMotivo').textContent = obterMetrica(analise, 'motivo_alerta') || 'Atenção especial requerida para esta chamada.';
+          if (alertBadgeContainer) {
+            alertBadgeContainer.innerHTML = `Alerta Supervisão: <span class="badge t-critica" style="display:inline-flex; font-weight:900;">SIM</span>`;
+          }
+        } else {
+          if (alertBox) alertBox.style.display = 'none';
+          if (alertBadgeContainer) {
+            alertBadgeContainer.innerHTML = `Alerta Supervisão: <span class="badge t-neutra" style="display:inline-flex;">NÃO</span>`;
+          }
+        }
+
+        // Renderização de cada sub-aba de dados
+        renderizarResumoExperiencia(analise);
+        renderizarCriteriosOperacionais(analise);
+        renderizarPontosAuditoria(analise);
+        renderizarTranscricao(analise, transcricao, filename);
+
+        // Atualização segura do payload JSON oculto (retrocompatibilidade)
+        const aJsonEl = document.getElementById('aJson');
+        if (aJsonEl) {
+          aJsonEl.textContent = JSON.stringify(analise);
+        }
       }
 
       // ======================================================
@@ -1689,7 +2193,7 @@
         tbodyHistorico.innerHTML = `<tr><td colspan="8" class="table-empty">Carregando histórico do banco...</td></tr>`;
 
         try {
-          const endpoint = modo === 'criticas' ? '/api/qualidade/criticas' : '/api/qualidade';
+          const endpoint = '/api/qualidade';
           const r = await fetch(endpoint);
           const data = await r.json();
 
@@ -1713,10 +2217,9 @@
             const sentCliente = item.sentimento_cliente || 'neutro';
             const nota = item.nota_final ?? 0;
             const classif = item.classificacao_ligacao || 'regular';
-            const statusM = item.status_monitoria || 'aprovada';
             const alerta = item.alerta_supervisao;
 
-            const badgeStatusHtml = `<span class="badge s-aprovada" style="padding: 2px 8px; font-size:10px;"><span style="width:6px; height:6px; background:#25b77a; border-radius:50%; display:inline-block; margin-right:4px; vertical-align:middle;"></span>Concluído</span>`;
+            const badgeStatusHtml = `<span class="badge s-aprovada" style="padding: 2px 8px; font-size:10px; display:inline-flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; background:#25b77a; border-radius:50%; display:inline-block;"></span>Concluído</span>`;
 
             return `<tr id="tr-${idx}" onclick="window._selecionarLinha(${idx})">
               <td>${dataStr}</td>
@@ -1757,48 +2260,33 @@
       };
 
       // ======================================================
-      // MOTOR WHISPER LOCAL (FALLBACK SILENCIOSO)
+      // MOTOR WHISPER LOCAL (FALLBACK SILENCIOSO COMPLETO)
       // ======================================================
-      async function obterWhisper(modelName) {
+      async function obterWhisperSilencioso(modelName) {
         if (whisperPipeline && whisperModelCarregado === modelName) return whisperPipeline;
 
         progressWrap.style.display = 'block';
-        progressText.textContent = `Baixando motor de transcrição local...`;
-        progressPct.textContent = '0%';
-        progressFill.style.width = '0%';
+        progressText.textContent = 'IA JRC analisando a chamada. Isso pode levar alguns instantes...';
         setButtons(true);
 
         try {
           whisperPipeline = await pipeline('automatic-speech-recognition', modelName, {
             quantized: true,
             progress_callback: (progress) => {
-              if (progress.status === 'progress') {
-                const pct = Math.round((progress.loaded / progress.total) * 100);
-                progressPct.textContent = `${pct}%`;
-                progressFill.style.width = `${pct}%`;
-                progressText.textContent = `Carregando motor IA JRC: (${pct}%)`;
-              } else if (progress.status === 'ready') {
-                progressText.textContent = 'Motor JRC pronto!';
-                progressFill.style.width = '100%';
-              }
+              progressText.textContent = 'IA JRC analisando a chamada. Isso pode levar alguns instantes...';
             },
           });
           whisperModelCarregado = modelName;
-          progressWrap.style.display = 'none';
           return whisperPipeline;
         } catch (err) {
-          progressWrap.style.display = 'none';
           throw new Error(`Falha ao inicializar motor de IA local: ${err.message}`);
-        } finally {
-          setButtons(false);
         }
       }
 
-      async function transcreverLocal(file, modelName) {
-        const transcriber = await obterWhisper(modelName);
+      async function transcreverLocalSilencioso(file, modelName) {
+        const transcriber = await obterWhisperSilencioso(modelName);
         const url = URL.createObjectURL(file);
         try {
-          setStatus('🎙️ Transcrevendo áudio localmente via motor JRC...', 'loading');
           const output = await transcriber(url, {
             chunk_length_s: 30,
             stride_length_s: 5,
@@ -1812,7 +2300,7 @@
       }
 
       // ======================================================
-      // FLUXO UNIFICADO DE ANÁLISE (FORM SUBMISSION)
+      // FLUXO UNIFICADO DE ANÁLISE (FORM SUBMISSION EXCLUSIVO)
       // ======================================================
       uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1823,10 +2311,30 @@
         }
 
         setButtons(true);
+        btnAnalisar.innerHTML = `
+          <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation: spin 1s infinite linear; display:inline-block; margin-right:6px; vertical-align:middle;">
+            <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)"/>
+            <path d="M4 12a8 8 0 018-8v8H4z" fill="currentColor"/>
+          </svg>
+          Analisando...
+        `;
+
+        progressWrap.style.display = 'block';
+        progressFill.className = 'progress-fill indeterminate';
+        progressPct.style.display = 'none';
 
         if (openaiConfigurada) {
-          // FLUXO OFICIAL SERVER-SIDE (OpenAI no backend)
-          setStatus('☁️ Transmitindo áudio para processamento com Inteligência Artificial JRC...', 'loading');
+          // FLUXO OFICIAL SERVER-SIDE
+          progressText.textContent = 'Enviando gravação para análise...';
+          setStatus('☁️ Enviando gravação para análise...', 'loading');
+          
+          setTimeout(() => {
+            if (progressText.textContent === 'Enviando gravação para análise...') {
+              progressText.textContent = 'IA JRC analisando a chamada. Isso pode levar alguns instantes...';
+              setStatus('⚙️ IA JRC analisando a chamada. Isso pode levar alguns instantes...', 'loading');
+            }
+          }, 3000);
+
           try {
             const formData = new FormData();
             formData.append('audio', file);
@@ -1835,32 +2343,38 @@
             const data = await resp.json();
             if (!resp.ok) throw new Error(data.erro || 'Falha ao processar arquivo no servidor.');
 
-            if (data.aviso) {
-              setStatus(`⚠️ Observação: ${data.aviso}`, 'loading');
-            } else {
-              setStatus('✅ Processamento e monitoria concluídos com sucesso!', 'success');
-            }
+            setStatus('✅ Monitoria concluída com sucesso.', 'success');
+            progressText.textContent = 'Monitoria concluída com sucesso.';
             exibirAuditoria(data.analise_qualidade, data.transcricao, file.name);
 
             await carregarMetricas();
             await carregarHistorico(modoExibicaoHistorico);
           } catch (err) {
-            setStatus(`❌ Erro de processamento: ${err.message}`, 'error');
+            setStatus('❌ Não foi possível concluir a análise. Verifique o áudio ou tente novamente.', 'error');
+            progressText.textContent = 'Não foi possível concluir a análise. Verifique o áudio ou tente novamente.';
           } finally {
             setButtons(false);
+            btnAnalisar.innerHTML = `
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:middle; margin-right:4px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+              </svg>
+              Analisar gravação
+            `;
           }
         } else {
-          // FLUXO DE FALLBACK TRANSPARENTE (Whisper local em segundo plano)
-          setStatus('⏳ Iniciando motor de inteligência artificial local...', 'loading');
+          // FLUXO DE FALLBACK SILENCIOSO
+          progressText.textContent = 'IA JRC analisando a chamada. Isso pode levar alguns instantes...';
+          setStatus('⚙️ IA JRC analisando a chamada. Isso pode levar alguns instantes...', 'loading');
+          
           try {
-            const modelName = 'Xenova/whisper-small'; // Fixo whisper-small para máxima fidelidade
-            const texto = await transcreverLocal(file, modelName);
+            const modelName = 'Xenova/whisper-small';
+            const texto = await transcreverLocalSilencioso(file, modelName);
 
             if (!texto || texto.trim().length === 0) {
               throw new Error('O motor local não conseguiu identificar voz audível no áudio enviado.');
             }
 
-            setStatus('📡 Transmissão concluída. Enviando dados ao backend para auditoria...', 'loading');
+            setStatus('⚙️ IA JRC analisando a chamada. Isso pode levar alguns instantes...', 'loading');
 
             const resp = await fetch('/api/processar-transcricao', {
               method: 'POST',
@@ -1871,16 +2385,24 @@
             const data = await resp.json();
             if (!resp.ok) throw new Error(data.erro || 'Falha ao consolidar monitoria no backend.');
 
-            setStatus('✅ Monitoria de qualidade gerada com sucesso!', 'success');
+            setStatus('✅ Monitoria concluída com sucesso.', 'success');
+            progressText.textContent = 'Monitoria concluída com sucesso.';
 
             exibirAuditoria(data.analise_qualidade, texto, file.name);
 
             await carregarMetricas();
             await carregarHistorico(modoExibicaoHistorico);
           } catch (err) {
-            setStatus(`❌ Erro no fallback: ${err.message}`, 'error');
+            setStatus('❌ Não foi possível concluir a análise. Verifique o áudio ou tente novamente.', 'error');
+            progressText.textContent = 'Não foi possível concluir a análise. Verifique o áudio ou tente novamente.';
           } finally {
             setButtons(false);
+            btnAnalisar.innerHTML = `
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:middle; margin-right:4px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+              </svg>
+              Analisar gravação
+            `;
           }
         }
       });
@@ -1891,6 +2413,29 @@
         await carregarMetricas();
         await carregarHistorico(modoExibicaoHistorico);
       });
+
+      // Lógica de alternância funcional de abas (tab switching)
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+          
+          btn.classList.add('active');
+          const tabId = btn.getAttribute('data-tab');
+          const pane = document.getElementById(tabId);
+          if (pane) pane.classList.add('active');
+        });
+      });
+
+      // CSS keyframe para spinner inlines
+      const styleSpinner = document.createElement('style');
+      styleSpinner.innerHTML = `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(styleSpinner);
 
       // ======================================================
       // INICIALIZAÇÃO DO ECOSSISTEMA
